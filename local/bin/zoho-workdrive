@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Zoho WorkDrive TrueSync launcher for NixOS
+# Uses nix-ld for library compatibility
+
+BINPATH="$HOME/.zohoworkdrivets/bin"
+
+if [ "$(id -u)" -eq 0 ]; then
+    echo "Can't run as root/sudo user" >&2
+    exit 1
+fi
+
+# Environment variables for the app
+export OPENSSL_CONF="$BINPATH/openssl.cnf"
+export QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu"
+export QTWEBENGINE_DISABLE_SANDBOX=1
+export QT_QPA_PLATFORM=xcb
+export DISPLAY="${DISPLAY:-:0}"
+export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
+
+# Use nix-ld libraries
+export LD_LIBRARY_PATH="$BINPATH/lib:$NIX_LD_LIBRARY_PATH:$LD_LIBRARY_PATH"
+
+exec "$BINPATH/zohoworkdrivets" "$@"

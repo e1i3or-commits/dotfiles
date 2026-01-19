@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+# Home directory backup using restic
+# Usage: backup [init|run|list|restore|prune]
+
+# Configuration - EDIT THESE
+BACKUP_REPO="${BACKUP_REPO:-/mnt/backup/restic}"  # Local encrypted NVMe backup drive
+BACKUP_PASSWORD_FILE="$HOME/.config/restic/password"
+
+# Directories to back up
+BACKUP_PATHS=(
+    "$HOME/Documents"
+    "$HOME/Downloads"
+    "$HOME/Pictures"
+    "$HOME/Videos"
+    "$HOME/Dev"
+    "$HOME/.config"
+    "$HOME/.local/bin"
+    "$HOME/.ssh"
+)
+
+# Directories to exclude
+EXCLUDE_PATTERNS=(
+    "node_modules"
+    ".git"
+    "__pycache__"
+    ".cache"
+    "*.tmp"
+    "*.log"
+    ".npm"
+    ".cargo/registry"
+    "target/debug"
+    "target/release"
+)
+
+# Build exclude args
+EXCLUDE_ARGS=""
+for pattern in "${EXCLUDE_PATTERNS[@]}"; do
+    EXCLUDE_ARGS="$EXCLUDE_ARGS --exclude $pattern"
+done
+
+check_password() {
+    if [ ! -f "$BACKUP_PASSWORD_FILE" ]; then
+        echo "Password file not found: $BACKUP_PASSWORD_FILE"
+        echo ""
+        echo "Create it with:"
+        echo "  mkdir -p ~/.config/restic"
+        echo "  echo 'your-secure-password' > ~/.config/restic/password"
+        echo "  chmod 600 ~/.config/restic/password"
+        exit 1
+    fi
+}
+
+init_repo() {
+    check_password
+    echo "Initializing backup repository at: $BACKUP_REPO"
+    restic -r "$BACKUP_REPO" --password-file "$BACKUP_PASSWORD_FILE" init
+}
+
+run_backup() {
+    check_password
+    echo "Starting backup to: $BACKUP_REPO"
+    echo "Backing up: ${BACKUP_PATHS[*]}"
+    echo ""
+
+    restic -r "$BACKUP_REPO" --password-file "$BACKUP_PASSWORD_FILE" \
+        backup ${BACKUP_PATHS[@]} \
+        $EXCLUDE_ARGS \
+        --verbose
+
+    if [ $? -eq 0 ]; then
+        notify-send "Backup Complete" "Home directory backed up successfully" -i drive-harddisk
+        echo ""
+        echo "Backup completed successfully!"
+    else
+        notify-send "Backup Failed" "Check terminal for errors" -i dialog-error
+        echo "Backup failed!"
+        exit 1
+    fi
+}
+
+list_snapshots() {
+    check_password
+    echo "Snapshots in: $BACKUP_REPO"
+    echo ""
+    restic -r "$BACKUP_REPO" --password-file "$BACKUP_PASSWORD_FILE" snapshots
+}
+
+restore_backup() {
+    check_password
+    local snapshot="${1:-latest}"
+    local target="${2:-$HOME/restored}"
+
+    echo "Restoring snapshot '$snapshot' to: $target"
+    mkdir -p "$target"
+    restic -r "$BACKUP_REPO" --password-file "$BACKUP_PASSWORD_FILE" \
+        restore "$snapshot" --target "$target"
+
+    echo ""
+    echo "Restored to: $target"
+}
+
+prune_old() {
+    check_password
+    echo "Pruning old backups..."
+    echo "Keeping: 7 daily, 4 weekly, 6 monthly snapshots"
+    echo ""
+
+    restic -r "$BACKUP_REPO" --password-file "$BACKUP_PASSWORD_FILE" \
+        forget --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune
+
+    echo ""
+    echo "Prune completed!"
+}
+
+show_help() {
+    echo "Home Backup Tool (restic)"
+    echo ""
+    echo "Usage: backup <command>"
+    echo ""
+    echo "Commands:"
+    echo "  init     Initialize backup repository"
+    echo "  run      Run backup now"
+    echo "  list     List all snapshots"
+    echo "  restore  Restore from snapshot (backup restore [snapshot-id] [target-dir])"
+    echo "  prune    Remove old snapshots (keeps 7 daily, 4 weekly, 6 monthly)"
+    echo ""
+    echo "Environment:"
+    echo "  BACKUP_REPO  Override backup location (default: $BACKUP_REPO)"
+    echo ""
+    echo "First time setup:"
+    echo "  1. mkdir -p ~/.config/restic"
+    echo "  2. echo 'your-password' > ~/.config/restic/password"
+    echo "  3. chmod 600 ~/.config/restic/password"
+    echo "  4. backup init"
+    echo "  5. backup run"
+}
+
+case "${1:-help}" in
+    init)
+        init_repo
+        ;;
+    run|backup)
+        run_backup
+        ;;
+    list|snapshots)
+        list_snapshots
+        ;;
+    restore)
+        restore_backup "$2" "$3"
+        ;;
+    prune|clean)
+        prune_old
+        ;;
+    *)
+        show_help
+        ;;
+esac

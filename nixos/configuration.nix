@@ -15,6 +15,19 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # LUKS encrypted backup drive - auto-unlock on boot
+  boot.initrd.luks.devices."backup-drive" = {
+    device = "/dev/disk/by-uuid/57455e4c-55dc-460e-a2b9-71faa93a81a9";
+    keyFile = "/etc/secrets/backup-drive.key";
+  };
+
+  # Mount backup drive
+  fileSystems."/mnt/backup" = {
+    device = "/dev/mapper/backup-drive";
+    fsType = "ext4";
+    options = [ "nofail" ];  # Don't fail boot if drive missing
+  };
+
   # Hostname
   networking.hostName = "nixos";
 
@@ -242,12 +255,11 @@
     wl-clipboard
     cliphist
     playerctl
-    timeshift
     fontconfig
+    restic              # Backup tool for home directory
 
     # Wayland tools
-    wofi
-    fuzzel              # Fast Wayland launcher (alternative to wofi)
+    fuzzel              # Fast Wayland launcher
     waybar
     wl-clipboard-x11
     swaylock
@@ -417,6 +429,33 @@
 
     home.packages = with pkgs; [];
 
+    # Daily backup timer
+    systemd.user.services.backup = {
+      Unit = {
+        Description = "Home directory backup with restic";
+        After = [ "network.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "%h/.local/bin/backup run";
+        Environment = "PATH=/run/current-system/sw/bin";
+      };
+    };
+
+    systemd.user.timers.backup = {
+      Unit = {
+        Description = "Daily backup timer";
+      };
+      Timer = {
+        OnCalendar = "daily";  # Runs at midnight
+        Persistent = true;     # Run if missed while off
+        RandomizedDelaySec = "1h";  # Random delay up to 1h
+      };
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+    };
+
     # Git configuration
     programs.git = {
       enable = true;
@@ -453,7 +492,8 @@
       interactiveShellInit = ''
         # Starship prompt (handled by programs.starship)
         set fish_greeting ""
-        # Add npm global bin to PATH (for Claude Code)
+        # Add custom scripts and npm global to PATH
+        fish_add_path ~/.local/bin
         fish_add_path ~/.npm-global/bin
         # Midnight Ember fish colors
         set -g fish_color_autosuggestion 484f58
