@@ -1,0 +1,52 @@
+# Swaylock Configuration - Midnight Ember Theme
+
+# Behavior
+daemonize
+ignore-empty-password
+show-failed-attempts
+
+# Appearance
+color=0d1117
+
+# Indicator circle
+indicator-radius=120
+indicator-thickness=12
+
+# Colors (Midnight Ember)
+inside-color=0d111700
+inside-clear-color=0d111700
+inside-caps-lock-color=0d111700
+inside-ver-color=0d111700
+inside-wrong-color=ef444420
+
+ring-color=30363d
+ring-clear-color=22d3ee
+ring-caps-lock-color=eab308
+ring-ver-color=f97316
+ring-wrong-color=ef4444
+
+line-color=00000000
+line-clear-color=00000000
+line-caps-lock-color=00000000
+line-ver-color=00000000
+line-wrong-color=00000000
+
+separator-color=00000000
+
+text-color=e6edf3
+text-clear-color=22d3ee
+text-caps-lock-color=eab308
+text-ver-color=f97316
+text-wrong-color=ef4444
+
+bs-hl-color=ef4444
+key-hl-color=f97316
+
+# Layout
+layout-bg-color=00000000
+layout-border-color=00000000
+layout-text-color=e6edf3
+
+# Font
+font=JetBrainsMono Nerd Font
+font-size=24

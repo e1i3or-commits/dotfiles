@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Simple screen recorder for Wayland using wf-recorder
+# Usage: screenrecord [start|stop|region|toggle]
+
+PIDFILE="/tmp/screenrecord.pid"
+RECORDINGS_DIR="$HOME/Videos/Recordings"
+
+mkdir -p "$RECORDINGS_DIR"
+
+start_recording() {
+    if [ -f "$PIDFILE" ]; then
+        echo "Already recording! Use 'screenrecord stop' to stop."
+        exit 1
+    fi
+
+    FILENAME="$RECORDINGS_DIR/recording-$(date +%Y-%m-%d_%H-%M-%S).mp4"
+
+    # Record full screen with NVIDIA hardware encoding (HEVC for ultrawide support)
+    wf-recorder -c hevc_nvenc -f "$FILENAME" &
+    echo $! > "$PIDFILE"
+    notify-send "Screen Recording" "Recording started (NVENC)" -i media-record
+    echo "Recording to: $FILENAME"
+}
+
+start_region() {
+    if [ -f "$PIDFILE" ]; then
+        echo "Already recording! Use 'screenrecord stop' to stop."
+        exit 1
+    fi
+
+    FILENAME="$RECORDINGS_DIR/recording-$(date +%Y-%m-%d_%H-%M-%S).mp4"
+    GEOMETRY=$(slurp)
+
+    if [ -z "$GEOMETRY" ]; then
+        echo "No region selected"
+        exit 1
+    fi
+
+    wf-recorder -g "$GEOMETRY" -f "$FILENAME" &
+    echo $! > "$PIDFILE"
+    notify-send "Screen Recording" "Recording region" -i media-record
+    echo "Recording to: $FILENAME"
+}
+
+stop_recording() {
+    if [ ! -f "$PIDFILE" ]; then
+        echo "Not recording"
+        exit 1
+    fi
+
+    kill -SIGINT $(cat "$PIDFILE") 2>/dev/null
+    rm -f "$PIDFILE"
+    notify-send "Screen Recording" "Recording saved to ~/Videos/Recordings" -i media-playback-stop
+    echo "Recording stopped"
+}
+
+toggle_recording() {
+    if [ -f "$PIDFILE" ]; then
+        stop_recording
+    else
+        start_recording
+    fi
+}
+
+case "${1:-toggle}" in
+    start)
+        start_recording
+        ;;
+    stop)
+        stop_recording
+        ;;
+    region)
+        start_region
+        ;;
+    toggle)
+        toggle_recording
+        ;;
+    status)
+        if [ -f "$PIDFILE" ]; then
+            echo "Recording (PID: $(cat $PIDFILE))"
+        else
+            echo "Not recording"
+        fi
+        ;;
+    *)
+        echo "Usage: screenrecord [start|stop|region|toggle|status]"
+        exit 1
+        ;;
+esac

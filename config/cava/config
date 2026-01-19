@@ -1,0 +1,56 @@
+# Cava Configuration - Midnight Ember Theme
+
+[general]
+framerate = 60
+autosens = 1
+sensitivity = 100
+bars = 0
+bar_width = 2
+bar_spacing = 1
+lower_cutoff_freq = 50
+higher_cutoff_freq = 10000
+
+[input]
+method = pipewire
+source = auto
+
+[output]
+method = ncurses
+channels = stereo
+mono_option = average
+reverse = 0
+raw_target = /dev/stdout
+data_format = binary
+bit_format = 16bit
+ascii_max_range = 1000
+bar_delimiter = 59
+frame_delimiter = 10
+
+[color]
+background = default
+foreground = default
+
+# Midnight Ember gradient: orange -> cyan
+gradient = 1
+gradient_count = 6
+gradient_color_1 = '#f97316'
+gradient_color_2 = '#fb923c'
+gradient_color_3 = '#fdba74'
+gradient_color_4 = '#67e8f9'
+gradient_color_5 = '#22d3ee'
+gradient_color_6 = '#06b6d4'
+
+[smoothing]
+integral = 77
+monstercat = 0
+waves = 0
+gravity = 100
+ignore = 0
+noise_reduction = 0.77
+
+[eq]
+1 = 1
+2 = 1
+3 = 1
+4 = 1
+5 = 1

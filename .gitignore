@@ -1,0 +1,22 @@
+# Backups
+*.backup
+
+# Secrets
+**/secrets/
+**/*.key
+**/*.pem
+
+# Cache
+**/cache/
+**/.cache/
+
+# History files
+**/fish_history
+**/*_history
+
+# Local overrides
+*.local
+
+# OS files
+.DS_Store
+Thumbs.db

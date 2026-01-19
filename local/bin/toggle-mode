@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Toggle between Vibe Mode and Focus Mode for Niri
+# Midnight Ember theme
+
+CONFIG_DIR="$HOME/.config/niri"
+VIBE_CONFIG="$CONFIG_DIR/config-vibe.kdl"
+FOCUS_CONFIG="$CONFIG_DIR/config-focus.kdl"
+ACTIVE_CONFIG="$CONFIG_DIR/config.kdl"
+MODE_FILE="$CONFIG_DIR/.current-mode"
+
+# Determine current mode
+if [ -f "$MODE_FILE" ]; then
+    CURRENT_MODE=$(cat "$MODE_FILE")
+else
+    CURRENT_MODE="vibe"
+fi
+
+# Toggle mode
+if [ "$CURRENT_MODE" = "vibe" ]; then
+    NEW_MODE="focus"
+    cp "$FOCUS_CONFIG" "$ACTIVE_CONFIG"
+    ICON=""
+    MESSAGE="Focus Mode"
+    SUBTITLE="Gaps: 0 | Animations: Fast"
+else
+    NEW_MODE="vibe"
+    cp "$VIBE_CONFIG" "$ACTIVE_CONFIG"
+    ICON=""
+    MESSAGE="Vibe Mode"
+    SUBTITLE="Gaps: 12px | Animations: Smooth"
+fi
+
+# Save new mode
+echo "$NEW_MODE" > "$MODE_FILE"
+
+# Reload Niri config
+niri msg action load-config-file
+
+# Send notification
+notify-send -u normal -t 2000 "$ICON $MESSAGE" "$SUBTITLE"
+
+echo "Switched to $NEW_MODE mode"

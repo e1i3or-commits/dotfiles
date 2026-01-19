@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Night mode control script using wlsunset
+# Usage: night-mode [on|off|toggle|status]
+
+TEMP_NIGHT=2800  # Very warm temperature (Kelvin) for night - more noticeable
+TEMP_DAY=6500    # Normal temperature for day
+
+start_night() {
+    # Kill any existing wlsunset
+    pkill -x wlsunset 2>/dev/null
+    sleep 0.2
+    # wlsunset requires -T > -t, so set -T just 1K higher
+    wlsunset -t $TEMP_NIGHT -T $(($TEMP_NIGHT + 1)) &
+    disown
+    notify-send "Night Mode" "Blue light filter enabled (${TEMP_NIGHT}K)" -i weather-clear-night
+}
+
+stop_night() {
+    pkill -x wlsunset 2>/dev/null
+    notify-send "Night Mode" "Blue light filter disabled" -i weather-clear
+}
+
+case "${1:-toggle}" in
+    on|start)
+        start_night
+        ;;
+    off|stop)
+        stop_night
+        ;;
+    toggle)
+        if pgrep -x wlsunset > /dev/null; then
+            stop_night
+        else
+            start_night
+        fi
+        ;;
+    status)
+        if pgrep -x wlsunset > /dev/null; then
+            echo "Night mode: ON"
+        else
+            echo "Night mode: OFF"
+        fi
+        ;;
+    *)
+        echo "Usage: night-mode [on|off|toggle|status]"
+        exit 1
+        ;;
+esac

@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Web App Remover - Removes webapp desktop entries
+# Usage: webapp-remove [name]
+
+WEBAPPS_DIR="$HOME/.local/share/webapps"
+ICONS_DIR="$WEBAPPS_DIR/icons"
+APPS_DIR="$HOME/.local/share/applications"
+
+# List installed webapps
+list_webapps() {
+    echo "Installed Web Apps:"
+    echo "==================="
+    for f in "$APPS_DIR"/webapp-*.desktop 2>/dev/null; do
+        [ -f "$f" ] || continue
+        name=$(grep "^Name=" "$f" | cut -d= -f2)
+        safe_name=$(basename "$f" .desktop | sed 's/webapp-//')
+        echo "  - $name ($safe_name)"
+    done
+}
+
+if [ $# -eq 0 ]; then
+    list_webapps
+    echo ""
+    read -p "Enter app name to remove (or 'q' to quit): " APP_NAME
+    [ "$APP_NAME" = "q" ] && exit 0
+else
+    APP_NAME="$1"
+fi
+
+# Create safe filename
+SAFE_NAME=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+
+DESKTOP_FILE="$APPS_DIR/webapp-$SAFE_NAME.desktop"
+
+if [ ! -f "$DESKTOP_FILE" ]; then
+    echo "Error: Web app '$APP_NAME' not found"
+    echo "Looking for: $DESKTOP_FILE"
+    exit 1
+fi
+
+# Remove desktop file
+rm -f "$DESKTOP_FILE"
+echo "Removed: $DESKTOP_FILE"
+
+# Remove icon if exists
+for ext in png svg ico jpg jpeg; do
+    ICON_FILE="$ICONS_DIR/$SAFE_NAME.$ext"
+    if [ -f "$ICON_FILE" ]; then
+        rm -f "$ICON_FILE"
+        echo "Removed icon: $ICON_FILE"
+    fi
+done
+
+echo ""
+echo "Web app '$APP_NAME' removed!"
+
+# Update desktop database
+update-desktop-database "$APPS_DIR" 2>/dev/null || true

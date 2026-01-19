@@ -1,0 +1,135 @@
+/* Waybar - Midnight Ember Theme */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+window#waybar {
+    background: rgba(13, 17, 23, 0.85);
+    border-radius: 12px;
+    border: 1px solid #30363d;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/* All modules */
+#workspaces,
+#clock,
+#pulseaudio,
+#network,
+#battery,
+#tray {
+    padding: 0 12px;
+    margin: 4px 4px;
+    color: #e6edf3;
+}
+
+/* Workspaces */
+#workspaces {
+    background: transparent;
+    padding: 0 4px;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    background: transparent;
+    color: #484f58;
+    border: none;
+    border-radius: 6px;
+    margin: 4px 2px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    background: #161b22;
+    color: #e6edf3;
+}
+
+#workspaces button.active {
+    color: #f97316;
+    background: #161b22;
+}
+
+#workspaces button.urgent {
+    color: #ef4444;
+}
+
+/* Clock */
+#clock {
+    color: #e6edf3;
+    background: #161b22;
+    border-radius: 8px;
+    padding: 0 16px;
+}
+
+/* Pulseaudio */
+#pulseaudio {
+    color: #22d3ee;
+}
+
+#pulseaudio.muted {
+    color: #484f58;
+}
+
+/* Network */
+#network {
+    color: #22c55e;
+}
+
+#network.disconnected {
+    color: #ef4444;
+}
+
+/* Battery */
+#battery {
+    color: #22c55e;
+}
+
+#battery.charging {
+    color: #f97316;
+}
+
+#battery.warning:not(.charging) {
+    color: #eab308;
+}
+
+#battery.critical:not(.charging) {
+    color: #ef4444;
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    to {
+        color: #ffffff;
+    }
+}
+
+/* Tray */
+#tray {
+    margin-right: 8px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    color: #f97316;
+}
+
+/* Tooltip */
+tooltip {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+}
+
+tooltip label {
+    color: #e6edf3;
+    padding: 8px;
+}

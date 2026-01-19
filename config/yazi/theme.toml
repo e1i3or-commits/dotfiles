@@ -1,0 +1,121 @@
+# Yazi Theme - Midnight Ember
+
+[manager]
+cwd = { fg = "#22d3ee", bold = true }
+hovered = { fg = "#0d1117", bg = "#f97316", bold = true }
+preview_hovered = { underline = true }
+find_keyword = { fg = "#f97316", bold = true, italic = true }
+find_position = { fg = "#22d3ee", bg = "reset", bold = true, italic = true }
+marker_copied = { fg = "#22c55e", bg = "#22c55e" }
+marker_cut = { fg = "#ef4444", bg = "#ef4444" }
+marker_selected = { fg = "#f97316", bg = "#f97316" }
+tab_active = { fg = "#0d1117", bg = "#f97316", bold = true }
+tab_inactive = { fg = "#e6edf3", bg = "#161b22" }
+tab_width = 1
+count_copied = { fg = "#0d1117", bg = "#22c55e" }
+count_cut = { fg = "#0d1117", bg = "#ef4444" }
+count_selected = { fg = "#0d1117", bg = "#f97316" }
+border_symbol = "│"
+border_style = { fg = "#30363d" }
+
+[status]
+separator_open = ""
+separator_close = ""
+separator_style = { fg = "#161b22", bg = "#161b22" }
+
+mode_normal = { fg = "#0d1117", bg = "#22d3ee", bold = true }
+mode_select = { fg = "#0d1117", bg = "#f97316", bold = true }
+mode_unset = { fg = "#0d1117", bg = "#ef4444", bold = true }
+
+progress_label = { fg = "#e6edf3", bold = true }
+progress_normal = { fg = "#30363d", bg = "#161b22" }
+progress_error = { fg = "#ef4444", bg = "#161b22" }
+
+permissions_t = { fg = "#22d3ee" }
+permissions_r = { fg = "#eab308" }
+permissions_w = { fg = "#ef4444" }
+permissions_x = { fg = "#22c55e" }
+permissions_s = { fg = "#484f58" }
+
+[select]
+border = { fg = "#f97316" }
+active = { fg = "#f97316", bold = true }
+inactive = { fg = "#e6edf3" }
+
+[input]
+border = { fg = "#f97316" }
+title = { fg = "#f97316" }
+value = { fg = "#e6edf3" }
+selected = { reversed = true }
+
+[completion]
+border = { fg = "#30363d" }
+active = { fg = "#0d1117", bg = "#f97316" }
+inactive = { fg = "#e6edf3" }
+
+[tasks]
+border = { fg = "#30363d" }
+title = { fg = "#f97316" }
+hovered = { fg = "#f97316", underline = true }
+
+[which]
+cols = 3
+mask = { bg = "#161b22" }
+cand = { fg = "#22d3ee" }
+rest = { fg = "#484f58" }
+desc = { fg = "#e6edf3" }
+separator = "  "
+separator_style = { fg = "#30363d" }
+
+[help]
+on = { fg = "#22d3ee" }
+run = { fg = "#f97316" }
+desc = { fg = "#e6edf3" }
+hovered = { reversed = true, bold = true }
+footer = { fg = "#484f58", bg = "#161b22" }
+
+[notify]
+title_info = { fg = "#22d3ee" }
+title_warn = { fg = "#eab308" }
+title_error = { fg = "#ef4444" }
+
+[filetype]
+rules = [
+    # Directories
+    { name = "*/", fg = "#22d3ee", bold = true },
+
+    # Media
+    { mime = "image/*", fg = "#f5c2e7" },
+    { mime = "video/*", fg = "#22d3ee" },
+    { mime = "audio/*", fg = "#eab308" },
+
+    # Archives
+    { mime = "application/zip", fg = "#f97316" },
+    { mime = "application/gzip", fg = "#f97316" },
+    { mime = "application/x-tar", fg = "#f97316" },
+    { mime = "application/x-rar", fg = "#f97316" },
+    { mime = "application/x-7z-compressed", fg = "#f97316" },
+
+    # Documents
+    { mime = "application/pdf", fg = "#ef4444" },
+    { mime = "application/doc", fg = "#22d3ee" },
+    { mime = "text/*", fg = "#22c55e" },
+
+    # Executables
+    { mime = "application/x-executable", fg = "#22c55e" },
+    { name = "*.sh", fg = "#22c55e" },
+
+    # Config files
+    { name = "*.toml", fg = "#eab308" },
+    { name = "*.yaml", fg = "#eab308" },
+    { name = "*.yml", fg = "#eab308" },
+    { name = "*.json", fg = "#eab308" },
+    { name = "*.nix", fg = "#22d3ee" },
+    { name = "*.kdl", fg = "#22d3ee" },
+
+    # Git
+    { name = ".git*", fg = "#f97316" },
+
+    # Default
+    { name = "*", fg = "#e6edf3" },
+]

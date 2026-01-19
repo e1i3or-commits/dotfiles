@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# Web App Installer - Creates desktop entries for web apps
+# Usage: webapp-install <name> <url> [icon-url]
+
+set -e
+
+WEBAPPS_DIR="$HOME/.local/share/webapps"
+ICONS_DIR="$WEBAPPS_DIR/icons"
+APPS_DIR="$HOME/.local/share/applications"
+
+# Ensure directories exist
+mkdir -p "$ICONS_DIR" "$APPS_DIR"
+
+# Interactive mode if no arguments
+if [ $# -eq 0 ]; then
+    echo "Web App Installer"
+    echo "================="
+    read -p "App name: " APP_NAME
+    read -p "URL: " APP_URL
+    read -p "Icon URL (optional, press Enter to skip): " ICON_URL
+else
+    APP_NAME="$1"
+    APP_URL="$2"
+    ICON_URL="${3:-}"
+fi
+
+# Validate inputs
+if [ -z "$APP_NAME" ] || [ -z "$APP_URL" ]; then
+    echo "Error: App name and URL are required"
+    echo "Usage: webapp-install <name> <url> [icon-url]"
+    exit 1
+fi
+
+# Create safe filename from app name
+SAFE_NAME=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+
+# Download icon if provided
+ICON_PATH=""
+if [ -n "$ICON_URL" ]; then
+    ICON_EXT="${ICON_URL##*.}"
+    # Default to png if extension is unclear
+    [[ "$ICON_EXT" =~ ^(png|svg|ico|jpg|jpeg)$ ]] || ICON_EXT="png"
+    ICON_PATH="$ICONS_DIR/$SAFE_NAME.$ICON_EXT"
+
+    echo "Downloading icon..."
+    if curl -sL "$ICON_URL" -o "$ICON_PATH"; then
+        echo "Icon saved to: $ICON_PATH"
+    else
+        echo "Warning: Failed to download icon, using default"
+        ICON_PATH="web-browser"
+    fi
+else
+    ICON_PATH="web-browser"
+fi
+
+# Create desktop entry
+DESKTOP_FILE="$APPS_DIR/webapp-$SAFE_NAME.desktop"
+
+cat > "$DESKTOP_FILE" << EOF
+[Desktop Entry]
+Version=1.0
+Name=$APP_NAME
+Comment=$APP_NAME Web App
+Exec=brave --app=$APP_URL --class=webapp-$SAFE_NAME
+Terminal=false
+Type=Application
+Icon=$ICON_PATH
+Categories=Network;WebApp;
+StartupWMClass=webapp-$SAFE_NAME
+Keywords=${APP_NAME,,};webapp;
+EOF
+
+echo "Created: $DESKTOP_FILE"
+echo ""
+echo "Web app '$APP_NAME' installed!"
+echo "It should now appear in your app launcher (wofi)."
+
+# Update desktop database
+update-desktop-database "$APPS_DIR" 2>/dev/null || true

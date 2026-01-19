@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# List installed web apps
+
+APPS_DIR="$HOME/.local/share/applications"
+
+echo "Installed Web Apps:"
+echo "==================="
+
+found=0
+for f in "$APPS_DIR"/webapp-*.desktop 2>/dev/null; do
+    [ -f "$f" ] || continue
+    found=1
+    name=$(grep "^Name=" "$f" | cut -d= -f2)
+    url=$(grep "^Exec=" "$f" | sed 's/.*--app=//' | sed 's/ .*//')
+    icon=$(grep "^Icon=" "$f" | cut -d= -f2)
+    echo ""
+    echo "  $name"
+    echo "    URL:  $url"
+    echo "    Icon: $icon"
+done
+
+if [ $found -eq 0 ]; then
+    echo "  No web apps installed."
+    echo ""
+    echo "Install one with: webapp-install <name> <url> [icon-url]"
+fi
