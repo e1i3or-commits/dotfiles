@@ -1,0 +1,121 @@
+# Yazi Theme - Frost Peak
+
+[manager]
+cwd = { fg = "#22d3ee", bold = true }
+hovered = { fg = "#06080c", bg = "#38bdf8", bold = true }
+preview_hovered = { underline = true }
+find_keyword = { fg = "#38bdf8", bold = true, italic = true }
+find_position = { fg = "#22d3ee", bg = "reset", bold = true, italic = true }
+marker_copied = { fg = "#34d399", bg = "#34d399" }
+marker_cut = { fg = "#f87171", bg = "#f87171" }
+marker_selected = { fg = "#a78bfa", bg = "#a78bfa" }
+tab_active = { fg = "#06080c", bg = "#38bdf8", bold = true }
+tab_inactive = { fg = "#e0e6f0", bg = "#141620" }
+tab_width = 1
+count_copied = { fg = "#06080c", bg = "#34d399" }
+count_cut = { fg = "#06080c", bg = "#f87171" }
+count_selected = { fg = "#06080c", bg = "#a78bfa" }
+border_symbol = "│"
+border_style = { fg = "#262a3a" }
+
+[status]
+separator_open = ""
+separator_close = ""
+separator_style = { fg = "#141620", bg = "#141620" }
+
+mode_normal = { fg = "#06080c", bg = "#38bdf8", bold = true }
+mode_select = { fg = "#06080c", bg = "#a78bfa", bold = true }
+mode_unset = { fg = "#06080c", bg = "#f87171", bold = true }
+
+progress_label = { fg = "#e0e6f0", bold = true }
+progress_normal = { fg = "#262a3a", bg = "#141620" }
+progress_error = { fg = "#f87171", bg = "#141620" }
+
+permissions_t = { fg = "#22d3ee" }
+permissions_r = { fg = "#f59e0b" }
+permissions_w = { fg = "#f87171" }
+permissions_x = { fg = "#34d399" }
+permissions_s = { fg = "#3a3f52" }
+
+[select]
+border = { fg = "#38bdf8" }
+active = { fg = "#38bdf8", bold = true }
+inactive = { fg = "#e0e6f0" }
+
+[input]
+border = { fg = "#38bdf8" }
+title = { fg = "#38bdf8" }
+value = { fg = "#e0e6f0" }
+selected = { reversed = true }
+
+[completion]
+border = { fg = "#262a3a" }
+active = { fg = "#06080c", bg = "#38bdf8" }
+inactive = { fg = "#e0e6f0" }
+
+[tasks]
+border = { fg = "#262a3a" }
+title = { fg = "#38bdf8" }
+hovered = { fg = "#38bdf8", underline = true }
+
+[which]
+cols = 3
+mask = { bg = "#141620" }
+cand = { fg = "#22d3ee" }
+rest = { fg = "#3a3f52" }
+desc = { fg = "#e0e6f0" }
+separator = "  "
+separator_style = { fg = "#262a3a" }
+
+[help]
+on = { fg = "#22d3ee" }
+run = { fg = "#38bdf8" }
+desc = { fg = "#e0e6f0" }
+hovered = { reversed = true, bold = true }
+footer = { fg = "#3a3f52", bg = "#141620" }
+
+[notify]
+title_info = { fg = "#38bdf8" }
+title_warn = { fg = "#f59e0b" }
+title_error = { fg = "#f87171" }
+
+[filetype]
+rules = [
+    # Directories
+    { name = "*/", fg = "#22d3ee", bold = true },
+
+    # Media
+    { mime = "image/*", fg = "#f472b6" },
+    { mime = "video/*", fg = "#a78bfa" },
+    { mime = "audio/*", fg = "#f59e0b" },
+
+    # Archives
+    { mime = "application/zip", fg = "#f59e0b" },
+    { mime = "application/gzip", fg = "#f59e0b" },
+    { mime = "application/x-tar", fg = "#f59e0b" },
+    { mime = "application/x-rar", fg = "#f59e0b" },
+    { mime = "application/x-7z-compressed", fg = "#f59e0b" },
+
+    # Documents
+    { mime = "application/pdf", fg = "#f87171" },
+    { mime = "application/doc", fg = "#38bdf8" },
+    { mime = "text/*", fg = "#34d399" },
+
+    # Executables
+    { mime = "application/x-executable", fg = "#34d399" },
+    { name = "*.sh", fg = "#34d399" },
+
+    # Config files
+    { name = "*.toml", fg = "#f59e0b" },
+    { name = "*.yaml", fg = "#f59e0b" },
+    { name = "*.yml", fg = "#f59e0b" },
+    { name = "*.json", fg = "#f59e0b" },
+    { name = "*.nix", fg = "#a78bfa" },
+    { name = "*.kdl", fg = "#a78bfa" },
+
+    # Git
+    { name = ".git*", fg = "#a78bfa" },
+
+    # Default
+    { name = "*", fg = "#e0e6f0" },
+]

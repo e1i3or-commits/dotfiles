@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <defs>
+    <linearGradient id="peak-glow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#7dd3fc" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="snow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#e0e6f0" stop-opacity="0.6"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background mountains (distant, faint) -->
+  <polygon points="10,95 45,55 60,70 80,45 110,95"
+    fill="#1a1d2a" opacity="0.6"/>
+  <polygon points="130,95 165,50 185,65 210,40 240,95"
+    fill="#1a1d2a" opacity="0.5"/>
+
+  <!-- Main mountain range -->
+  <polygon points="30,95 70,35 90,55 120,20 150,55 170,40 210,95"
+    fill="url(#peak-glow)" opacity="0.8"/>
+
+  <!-- Snow caps -->
+  <polygon points="120,20 110,38 115,35 120,28 125,35 130,38"
+    fill="url(#snow)"/>
+  <polygon points="70,35 63,48 67,45 70,40 73,45 77,48"
+    fill="url(#snow)" opacity="0.85"/>
+  <polygon points="170,40 163,52 167,49 170,44 173,49 177,52"
+    fill="url(#snow)" opacity="0.8"/>
+
+  <!-- Accent line at base -->
+  <line x1="50" y1="95" x2="190" y2="95"
+    stroke="#38bdf8" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Stars -->
+  <circle cx="25" cy="15" r="1" fill="#e0e6f0" opacity="0.7"/>
+  <circle cx="95" cy="8" r="1.2" fill="#38bdf8" opacity="0.8"/>
+  <circle cx="145" cy="12" r="0.8" fill="#e0e6f0" opacity="0.5"/>
+  <circle cx="200" cy="18" r="1" fill="#a78bfa" opacity="0.6"/>
+  <circle cx="55" cy="22" r="0.8" fill="#e0e6f0" opacity="0.4"/>
+  <circle cx="180" cy="8" r="1.1" fill="#e0e6f0" opacity="0.6"/>
+
+  <!-- Text: FROST PEAK -->
+  <text x="120" y="113" text-anchor="middle"
+    font-family="sans-serif" font-weight="600" font-size="11"
+    letter-spacing="4" fill="#38bdf8" opacity="0.7"
+    filter="url(#glow)">FROST PEAK</text>
+</svg>

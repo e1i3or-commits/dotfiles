@@ -1,22 +1,15 @@
-# Backups
-*.backup
+# Swap files
+*.swp
+*.swo
+*~
 
-# Secrets
-**/secrets/
-**/*.key
-**/*.pem
+# Nix build results
+result
+result-*
 
-# Cache
-**/cache/
-**/.cache/
+# Editor/IDE
+.vscode/
+.idea/
 
-# History files
-**/fish_history
-**/*_history
-
-# Local overrides
-*.local
-
-# OS files
-.DS_Store
-Thumbs.db
+# Backup files
+*.bak

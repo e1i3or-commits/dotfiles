@@ -1,0 +1,330 @@
+/* Frost Peak GDM Theme Overrides
+ * Appended to gnome-shell-dark.css
+ * Colors: Primary #38bdf8, BG #0c0e14, Surface #141620, Border #262a3a, Text #e0e6f0
+ */
+
+/* ===== Global Background ===== */
+#lockDialogGroup {
+  background-color: #0c0e14; }
+
+.screen-shield-background {
+  background: #06080c;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); }
+
+/* ===== Top Panel ===== */
+#panel {
+  background-color: rgba(6, 8, 12, 0.8);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.08); }
+
+#panel .panel-button {
+  color: #b0b8c8; }
+
+#panel .panel-button:hover {
+  color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.1); }
+
+#panel .panel-button:active,
+#panel .panel-button:checked {
+  color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.15); }
+
+/* ===== Login Dialog ===== */
+.login-dialog,
+.unlock-dialog {
+  color: #e0e6f0; }
+
+.login-dialog .caps-lock-warning-label,
+.login-dialog .login-dialog-message-warning,
+.unlock-dialog .caps-lock-warning-label,
+.unlock-dialog .login-dialog-message-warning {
+  color: #f87171; }
+
+.login-dialog .login-dialog-prompt-layout,
+.unlock-dialog .login-dialog-prompt-layout {
+  width: 25em;
+  spacing: 9px; }
+
+/* ===== Password Entry ===== */
+.login-dialog .login-dialog-prompt-entry {
+  background-color: #141620;
+  color: rgba(224, 230, 240, 0.8);
+  border: 1px solid #262a3a;
+  border-radius: 10px;
+  padding: 12px 14px; }
+
+.login-dialog .login-dialog-prompt-entry:hover {
+  background-color: #1a1d2a;
+  color: #e0e6f0;
+  border-color: #3a3f52; }
+
+.login-dialog .login-dialog-prompt-entry:focus {
+  background-color: #141620;
+  color: #e0e6f0;
+  border-color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.4) !important; }
+
+/* Unlock dialog entry */
+.unlock-dialog .login-dialog-prompt-entry {
+  background-color: rgba(20, 22, 32, 0.85);
+  color: rgba(224, 230, 240, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 10px; }
+
+.unlock-dialog .login-dialog-prompt-entry:hover {
+  background-color: rgba(26, 29, 42, 0.85);
+  color: #e0e6f0; }
+
+.unlock-dialog .login-dialog-prompt-entry:focus {
+  background-color: rgba(20, 22, 32, 0.9);
+  color: #e0e6f0;
+  border-color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.4) !important; }
+
+/* ===== User List Items ===== */
+.login-dialog-user-list-view .login-dialog-user-list .login-dialog-user-list-item {
+  color: #e0e6f0;
+  background-color: #141620;
+  border: 1px solid #262a3a;
+  border-radius: 14px;
+  padding: 12px;
+  transition-duration: 200ms; }
+
+.login-dialog-user-list-view .login-dialog-user-list .login-dialog-user-list-item:hover {
+  background-color: #1a1d2a;
+  border-color: rgba(56, 189, 248, 0.3); }
+
+.login-dialog-user-list-view .login-dialog-user-list .login-dialog-user-list-item:focus {
+  background-color: #1a1d2a;
+  border-color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.3) !important; }
+
+.login-dialog-user-list-view .login-dialog-user-list .login-dialog-user-list-item:selected {
+  background-color: rgba(56, 189, 248, 0.08);
+  border-color: #38bdf8; }
+
+/* ===== User Widget ===== */
+.login-dialog .user-widget .user-widget-label,
+.unlock-dialog .user-widget .user-widget-label {
+  color: #e0e6f0; }
+
+.login-dialog .user-widget .user-icon,
+.unlock-dialog .user-widget .user-icon {
+  background-color: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 2px solid rgba(56, 189, 248, 0.2);
+  border-radius: 999px; }
+
+/* ===== Login Buttons ===== */
+.login-dialog-button.a11y-button,
+.login-dialog-button.cancel-button,
+.login-dialog-button.switch-user-button,
+.login-dialog-button.login-dialog-session-list-button {
+  color: #e0e6f0;
+  background-color: #141620;
+  border: 1px solid #262a3a;
+  border-radius: 10px; }
+
+.login-dialog-button.a11y-button:hover,
+.login-dialog-button.cancel-button:hover,
+.login-dialog-button.switch-user-button:hover,
+.login-dialog-button.login-dialog-session-list-button:hover {
+  background-color: #1a1d2a;
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #38bdf8; }
+
+.login-dialog-button.a11y-button:focus,
+.login-dialog-button.cancel-button:focus,
+.login-dialog-button.switch-user-button:focus,
+.login-dialog-button.login-dialog-session-list-button:focus {
+  border-color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.3) !important;
+  background-color: #1a1d2a; }
+
+/* ===== Bottom Button Group ===== */
+.login-dialog-bottom-button-group {
+  padding: 32px;
+  spacing: 16px; }
+
+/* ===== "Not Listed" Button ===== */
+.login-dialog-not-listed-button {
+  color: #b0b8c8;
+  background-color: #141620;
+  border: 1px solid #262a3a;
+  border-radius: 10px;
+  padding: 0 8px;
+  margin: 6px; }
+
+.login-dialog-not-listed-button:hover {
+  color: #38bdf8;
+  background-color: #1a1d2a;
+  border-color: rgba(56, 189, 248, 0.3); }
+
+.login-dialog-not-listed-button:focus {
+  border-color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.3) !important;
+  background-color: #1a1d2a;
+  color: #38bdf8; }
+
+/* ===== Auth List Items ===== */
+.login-dialog .login-dialog-auth-list-item {
+  color: #e0e6f0;
+  background-color: #141620;
+  border: 1px solid #262a3a;
+  border-radius: 10px;
+  padding: 8px; }
+
+.login-dialog .login-dialog-auth-list-item:selected,
+.login-dialog .login-dialog-auth-list-item:focus {
+  border-color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.3) !important; }
+
+/* ===== Banner ===== */
+.login-dialog-banner-view .login-dialog-banner {
+  color: #b0b8c8; }
+
+/* ===== Messages ===== */
+.login-dialog-message,
+.login-dialog-message-hint {
+  color: #b0b8c8;
+  min-height: 2.75em; }
+
+/* ===== Logo ===== */
+.login-dialog-logo-bin {
+  margin: 2em 0; }
+
+/* ===== Unlock Dialog ===== */
+.unlock-dialog {
+  background-color: transparent; }
+
+.unlock-dialog-clock {
+  color: #e0e6f0;
+  spacing: 2em; }
+
+.unlock-dialog-clock .unlock-dialog-clock-time {
+  font-size: 6.546em;
+  font-weight: 800;
+  color: #e0e6f0; }
+
+.unlock-dialog-clock .unlock-dialog-clock-date {
+  font-weight: 400;
+  color: #b0b8c8; }
+
+.unlock-dialog-clock .unlock-dialog-clock-hint {
+  margin-top: 2em;
+  padding: 6px 18px;
+  color: #b0b8c8; }
+
+/* Unlock notification badges */
+.unlock-dialog-notification-count-text {
+  font-weight: bold;
+  padding: 0 12px;
+  color: #e0e6f0;
+  background-color: rgba(56, 189, 248, 0.15);
+  border-radius: 999px; }
+
+/* Unlock buttons */
+.unlock-dialog-notifications-container .message StButton,
+.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton,
+.unlock-dialog .button,
+.unlock-dialog .icon-button {
+  color: #e0e6f0;
+  background-color: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.15); }
+
+.unlock-dialog-notifications-container .message StButton:hover,
+.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:hover,
+.unlock-dialog .button:hover,
+.unlock-dialog .icon-button:hover {
+  background-color: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.3); }
+
+.unlock-dialog-notifications-container .message StButton:focus,
+.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus,
+.unlock-dialog .button:focus,
+.unlock-dialog .icon-button:focus {
+  border-color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.3) !important; }
+
+/* Notification container in unlock */
+.unlock-dialog-notifications-container {
+  background-color: transparent; }
+
+.unlock-dialog-notifications-container .message,
+.unlock-dialog-notifications-container .unlock-dialog-notification-source {
+  background-color: rgba(20, 22, 32, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.1);
+  border-radius: 12px;
+  color: #e0e6f0; }
+
+/* ===== Popup Menus (Power, A11y, Session) ===== */
+.popup-menu .popup-menu-content {
+  background-color: #141620;
+  border: 1px solid #262a3a;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  color: #e0e6f0; }
+
+.popup-menu-item {
+  color: #e0e6f0; }
+
+.popup-menu-item:hover,
+.popup-menu-item:focus {
+  background-color: rgba(56, 189, 248, 0.1);
+  color: #38bdf8; }
+
+.popup-menu-item:active {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38bdf8; }
+
+.popup-separator-menu-item .popup-separator-menu-item-separator {
+  background-color: #262a3a; }
+
+.popup-menu-ornament {
+  color: #38bdf8; }
+
+/* ===== Prompt Dialog (polkit, etc.) ===== */
+.prompt-dialog {
+  background-color: #141620;
+  border: 1px solid #262a3a;
+  border-radius: 16px;
+  color: #e0e6f0; }
+
+.prompt-dialog .prompt-dialog-error-label {
+  color: #f87171; }
+
+.prompt-dialog .prompt-dialog-info-label {
+  color: #b0b8c8; }
+
+/* ===== General StEntry Override ===== */
+StEntry {
+  background-color: #141620;
+  color: rgba(224, 230, 240, 0.8);
+  border: 1px solid #262a3a;
+  border-radius: 10px; }
+
+StEntry:hover {
+  background-color: #1a1d2a;
+  color: #e0e6f0; }
+
+StEntry:focus {
+  border-color: #38bdf8;
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.4) !important;
+  background-color: #141620;
+  color: #e0e6f0; }
+
+/* ===== OSD Elements ===== */
+.osd-window {
+  background-color: #141620;
+  border: 1px solid #262a3a;
+  color: #e0e6f0; }
+
+/* ===== Scrollbars ===== */
+StScrollBar StButton#vhandle,
+StScrollBar StButton#hhandle {
+  background-color: #3a3f52;
+  border-radius: 999px; }
+
+StScrollBar StButton#vhandle:hover,
+StScrollBar StButton#hhandle:hover {
+  background-color: #38bdf8; }

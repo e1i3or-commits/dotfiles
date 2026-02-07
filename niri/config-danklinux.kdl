@@ -1,0 +1,332 @@
+// Niri Configuration for DankLinux Integration
+// This config is optimized to work WITH DankLinux, avoiding conflicts
+// Copy to: ~/.config/niri/config.kdl after DankLinux installation
+
+// ============================================================================
+// INPUT CONFIGURATION
+// ============================================================================
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        repeat-delay 600
+        repeat-rate 25
+    }
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+        accel-speed 0.0
+        accel-profile "adaptive"
+    }
+
+    mouse {
+        accel-speed 0.0
+        accel-profile "adaptive"
+    }
+
+    focus-follows-mouse
+    workspace-auto-back-and-forth
+}
+
+// ============================================================================
+// OUTPUT CONFIGURATION
+// ============================================================================
+
+output "eDP-1" {
+    scale 1.0
+}
+
+// ============================================================================
+// LAYOUT CONFIGURATION
+// ============================================================================
+
+layout {
+    gaps 8
+
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    // Focus ring - Catppuccin Mocha Blue to match DankLinux
+    focus-ring {
+        width 4
+        active-color "#89b4fa"
+        inactive-color "#45475a"
+    }
+
+    border {
+        width 2
+        active-color "#89b4fa"
+        inactive-color "#313244"
+    }
+
+    // IMPORTANT: DankLinux manages its own panel
+    // Do NOT set struts here - let DankMaterialShell handle it
+}
+
+// ============================================================================
+// SPAWN AT STARTUP - DankLinux Specific
+// ============================================================================
+
+// Launch DankLinux components
+// Uncomment these AFTER installing DankLinux:
+
+// spawn-at-startup "dankmaterialshell"  // Main desktop shell
+// spawn-at-startup "dgop"                // System monitoring overlay
+
+// Terminal (still needed)
+spawn-at-startup "alacritty"
+
+// Background/wallpaper (DankLinux may handle this)
+// spawn-at-startup "swaybg" "-i" "/path/to/wallpaper.png"
+
+// Other startup apps (cloud sync, etc.)
+// spawn-at-startup "nextcloud" "--background"
+
+// DO NOT START:
+// - waybar (conflicts with DankMaterialShell)
+// - Any other panel/bar
+// - Any other notification daemon if DankLinux provides one
+
+// ============================================================================
+// ENVIRONMENT VARIABLES
+// ============================================================================
+
+environment {
+    QT_QPA_PLATFORM "wayland"
+    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    MOZ_ENABLE_WAYLAND "1"
+    XCURSOR_THEME "Adwaita"
+    XCURSOR_SIZE "24"
+}
+
+// ============================================================================
+// CURSOR CONFIGURATION
+// ============================================================================
+
+// Cursor is configured via environment variables above (XCURSOR_THEME, XCURSOR_SIZE)
+
+// ============================================================================
+// PREFER NO CSD
+// ============================================================================
+
+prefer-no-csd
+
+// ============================================================================
+// SCREENSHOT PATH
+// ============================================================================
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// ============================================================================
+// ANIMATIONS - Smooth but not slow
+// ============================================================================
+
+animations {
+    slowdown 1.0
+
+    window-open {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+
+    window-close {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+
+    window-resize {
+        duration-ms 100  // Faster for better feel
+        curve "ease-out-cubic"
+    }
+
+    window-movement {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+
+    workspace-switch {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+
+    horizontal-view-movement {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+
+    config-notification-open-close {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+}
+
+// ============================================================================
+// WINDOW RULES
+// ============================================================================
+
+window-rule {
+    match app-id="brave-browser"
+    open-on-workspace "1"
+}
+
+window-rule {
+    match app-id="code"
+    open-on-workspace "2"
+}
+
+window-rule {
+    match app-id="pavucontrol"
+    default-column-width { fixed 600; }
+}
+
+window-rule {
+    match app-id="org.gnome.Calculator"
+    default-column-width { fixed 400; }
+}
+
+// ============================================================================
+// KEYBINDINGS - DankLinux Compatible
+// ============================================================================
+
+binds {
+    // System
+    Mod+Shift+E { quit; }
+    Mod+Ctrl+R { spawn "niri" "msg" "action" "load-config-file"; }
+    Mod+Q { close-window; }
+
+    // Launchers
+    Mod+Return { spawn "alacritty"; }
+    Mod+T { spawn "alacritty"; }
+
+    // Application launcher - Use danksearch if DankLinux is installed
+    // Otherwise falls back to wofi
+    Mod+D { spawn "wofi" "--show" "drun"; }
+    // After DankLinux install, change to:
+    // Mod+D { spawn "danksearch"; }
+
+    Mod+E { spawn "thunar"; }
+    Mod+B { spawn "brave"; }
+    Mod+C { spawn "code"; }
+
+    // Screenshots (all save to file + clipboard)
+    Print { spawn "sh" "-c" "grim - | tee ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy"; }
+    Mod+Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | tee ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy"; }
+    Shift+Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | tee ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy"; }
+
+    // Window Navigation (Vim-style)
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+L { focus-column-right; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+
+    // Window Movement
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+J { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+    Mod+Shift+L { move-column-right; }
+
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+
+    // Window Sizing
+    Mod+R { consume-window-into-column; }
+    Mod+Shift+R { expel-window-from-column; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Plus  { set-column-width "+10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    // Workspace Navigation
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    Mod+Ctrl+Left  { focus-workspace-down; }
+    Mod+Ctrl+Right { focus-workspace-up; }
+    Mod+Page_Up   { focus-workspace-down; }
+    Mod+Page_Down { focus-workspace-up; }
+
+    // Move Window to Workspace
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+
+    // Window States
+    Mod+F { fullscreen-window; }
+    Mod+M { maximize-column; }
+
+    // Media Keys (compatible with DankLinux)
+    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute        { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute     { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+    // Scrolling
+    Mod+WheelScrollDown { focus-workspace-down; }
+    Mod+WheelScrollUp   { focus-workspace-up; }
+}
+
+// ============================================================================
+// DANKLINUX INTEGRATION NOTES
+// ============================================================================
+
+// After installing DankLinux:
+//
+// 1. ENABLE DANKLINUX COMPONENTS:
+//    Uncomment the spawn-at-startup lines for:
+//    - dankmaterialshell
+//    - dgop
+//
+// 2. UPDATE APP LAUNCHER:
+//    Change Mod+D binding from wofi to danksearch
+//
+// 3. REMOVE CONFLICTS:
+//    Do NOT start:
+//    - waybar
+//    - Any other status bar
+//    - Conflicting notification daemons
+//
+// 4. PANEL SPACE:
+//    DankMaterialShell manages its own panel space
+//    Do NOT set struts in layout {}
+//
+// 5. THEMING:
+//    DankLinux uses its own theming system
+//    The colors here (Catppuccin Mocha Blue) should complement it
+//
+// 6. TESTING:
+//    After DankLinux installation:
+//    - Reload: Mod+Shift+R
+//    - Check logs: journalctl -u niri -b
+//    - Validate: niri validate ~/.config/niri/config.kdl

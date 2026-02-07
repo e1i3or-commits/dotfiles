@@ -1,0 +1,375 @@
+// Niri Configuration - Omarchy-Inspired Keybindings
+// Adapted from Omarchy (DHH's Linux setup) for Niri compositor
+// See HOTKEYS.md for full reference
+
+// ============================================================================
+// INPUT CONFIGURATION
+// ============================================================================
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        // Fast keyboard repeat like Omarchy
+        repeat-delay 300
+        repeat-rate 50
+    }
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+        accel-speed 0.0
+        accel-profile "adaptive"
+    }
+
+    mouse {
+        accel-speed 0.0
+        accel-profile "adaptive"
+    }
+
+    focus-follows-mouse
+    workspace-auto-back-and-forth
+}
+
+// ============================================================================
+// OUTPUT CONFIGURATION
+// ============================================================================
+
+// Samsung LC49G95T (49" super ultrawide) - Main display
+output "DP-2" {
+    mode "5120x1440@119.999"
+    scale 1.0
+    position x=0 y=0
+}
+
+// Samsung LC34G55T (34" ultrawide) - Vertical, right of main
+output "DP-3" {
+    mode "3440x1440@99.982"
+    scale 1.25
+    transform "90"
+    position x=5120 y=0
+}
+
+// Laptop display (if connected)
+output "eDP-1" {
+    scale 1.0
+}
+
+// ============================================================================
+// GPU RENDERING - Force NVIDIA (card1) for compositing
+// Without this, niri may pick the AMD iGPU causing cross-GPU copies and stalls
+// ============================================================================
+
+debug {
+    render-drm-device "/dev/dri/card1"
+}
+
+// ============================================================================
+// LAYOUT CONFIGURATION
+// ============================================================================
+
+layout {
+    gaps 8
+
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    // Frost Peak focus ring - Ice blue accent
+    focus-ring {
+        width 1
+        active-color "#38bdf8"
+        inactive-color "#262a3a"
+    }
+
+    border {
+        width 1
+        active-color "#38bdf8"
+        inactive-color "#141620"
+    }
+}
+
+// ============================================================================
+// SPAWN AT STARTUP
+// ============================================================================
+
+spawn-at-startup "kitty"
+
+// ============================================================================
+// ENVIRONMENT VARIABLES
+// ============================================================================
+
+environment {
+    QT_QPA_PLATFORM "wayland"
+    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    MOZ_ENABLE_WAYLAND "1"
+    XCURSOR_THEME "Adwaita"
+    XCURSOR_SIZE "24"
+}
+
+// ============================================================================
+// PREFER NO CSD
+// ============================================================================
+
+prefer-no-csd
+
+// ============================================================================
+// SCREENSHOT PATH
+// ============================================================================
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+animations {
+    slowdown 1.0
+
+    window-open {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+
+    window-close {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+
+    window-resize {
+        duration-ms 100
+        curve "ease-out-cubic"
+    }
+
+    window-movement {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+
+    workspace-switch {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+
+    horizontal-view-movement {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+
+    config-notification-open-close {
+        duration-ms 150
+        curve "ease-out-cubic"
+    }
+}
+
+// ============================================================================
+// WINDOW RULES
+// ============================================================================
+
+window-rule {
+    match app-id="pavucontrol"
+    default-column-width { fixed 600; }
+}
+
+window-rule {
+    match app-id="org.gnome.Calculator"
+    default-column-width { fixed 400; }
+}
+
+window-rule {
+    match app-id="blueman-manager"
+    default-column-width { fixed 500; }
+}
+
+// ============================================================================
+// KEYBINDINGS - OMARCHY STYLE
+// ============================================================================
+
+binds {
+    // ========================================================================
+    // NAVIGATION (Omarchy Style)
+    // ========================================================================
+
+    // Application Launcher (Omarchy: Super+Space)
+    Mod+Space { spawn "wofi" "--show" "drun"; }
+
+    // Close Window (Omarchy: Super+W)
+    Mod+W { close-window; }
+
+    // Fullscreen (Omarchy: Super+F)
+    Mod+F { fullscreen-window; }
+
+    // Maximize width (Omarchy: Super+Alt+F for full width)
+    Mod+Alt+F { maximize-column; }
+
+    // Workspace Navigation (Omarchy: Super+1/2/3/4)
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    // Next/Previous Workspace (Omarchy: Super+Tab / Super+Shift+Tab)
+    Mod+Tab { focus-workspace-down; }
+    Mod+Shift+Tab { focus-workspace-up; }
+
+    // Move Window to Workspace (Omarchy: Super+Shift+1/2/3/4)
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+
+    // Focus Direction (Omarchy: Super+Arrow)
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+
+    // Vim-style focus (bonus)
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-down; }
+    Mod+K { focus-window-up; }
+    Mod+L { focus-column-right; }
+
+    // Swap Windows (Omarchy: Super+Shift+Arrow)
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+
+    // Vim-style move
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+J { move-window-down; }
+    Mod+Shift+K { move-window-up; }
+    Mod+Shift+L { move-column-right; }
+
+    // Resize Windows (Omarchy: Super+Equal/Minus)
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+
+    // Toggle floating (Omarchy: Super+T)
+    // Note: Niri doesn't have traditional floating, using consume/expel instead
+    Mod+T { consume-or-expel-window-left; }
+
+    // Column grouping (similar to Omarchy's Super+G for grouping)
+    Mod+G { consume-window-into-column; }
+    Mod+Alt+G { expel-window-from-column; }
+
+    // ========================================================================
+    // LAUNCHING APPS (Omarchy Style)
+    // ========================================================================
+
+    // Terminal (Omarchy: Super+Return)
+    Mod+Return { spawn "kitty"; }
+
+    // Browser (Omarchy: Super+Shift+B)
+    Mod+Shift+B { spawn "brave"; }
+
+    // File Manager - Yazi (Super+Shift+F)
+    Mod+Shift+F { spawn "kitty" "-e" "yazi"; }
+
+    // Music/Spotify (Omarchy: Super+Shift+M)
+    Mod+Shift+M { spawn "spotify"; }
+
+    // Code Editor - VSCode (adapted, Omarchy uses Neovim)
+    Mod+Shift+N { spawn "code"; }
+
+    // Obsidian Notes (Omarchy: Super+Shift+O)
+    Mod+Shift+O { spawn "obsidian"; }
+
+    // Password Manager (Omarchy: Super+Shift+/)
+    Mod+Shift+Slash { spawn "bitwarden-desktop"; }
+
+    // Docker/Lazygit (Omarchy: Super+Shift+D for LazyDocker)
+    Mod+Shift+D { spawn "kitty" "-e" "lazygit"; }
+
+    // System Monitor (Omarchy: Super+Ctrl+T for btop)
+    Mod+Ctrl+T { spawn "kitty" "-e" "btop"; }
+
+    // ========================================================================
+    // SYSTEM CONTROLS (Omarchy Style)
+    // ========================================================================
+
+    // Audio Controls (Omarchy: Super+Ctrl+A)
+    Mod+Ctrl+A { spawn "pavucontrol"; }
+
+    // Bluetooth (Omarchy: Super+Ctrl+B)
+    Mod+Ctrl+B { spawn "blueman-manager"; }
+
+    // Wifi (Omarchy: Super+Ctrl+W)
+    Mod+Ctrl+W { spawn "nm-connection-editor"; }
+
+    // Lock Screen (Omarchy: Super+Ctrl+L)
+    // Note: Requires a screen locker like swaylock
+    // Mod+Ctrl+L { spawn "swaylock"; }
+
+    // Quit/Power Menu (Omarchy: Super+Escape)
+    Mod+Escape { quit; }
+
+    // Reload Config (adapted)
+    Mod+Ctrl+R { spawn "niri" "msg" "action" "load-config-file"; }
+
+    // ========================================================================
+    // SCREENSHOTS & CAPTURE
+    // ========================================================================
+
+    // Screenshot selection to clipboard + file (Windows/Mac style: Super+Shift+S)
+    Mod+Shift+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | tee ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy"; }
+
+    // Screenshot selection to clipboard + file (Print key)
+    Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | tee ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy"; }
+
+    // Full screenshot to clipboard + file
+    Mod+Print { spawn "sh" "-c" "grim - | tee ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png | wl-copy"; }
+
+    // ========================================================================
+    // CLIPBOARD (Omarchy Style)
+    // ========================================================================
+
+    // Clipboard history (Omarchy: Super+Ctrl+V)
+    // Requires cliphist: wl-paste --watch cliphist store (run at startup)
+    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | wofi --dmenu | cliphist decode | wl-copy"; }
+
+    // ========================================================================
+    // MEDIA KEYS
+    // ========================================================================
+
+    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute        { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute     { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+    XF86AudioPlay  { spawn "playerctl" "play-pause"; }
+    XF86AudioPause { spawn "playerctl" "play-pause"; }
+    XF86AudioNext  { spawn "playerctl" "next"; }
+    XF86AudioPrev  { spawn "playerctl" "previous"; }
+
+    // ========================================================================
+    // MOUSE SCROLLING
+    // ========================================================================
+
+    Mod+WheelScrollDown { focus-workspace-down; }
+    Mod+WheelScrollUp   { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown { move-window-to-workspace-down; }
+    Mod+Shift+WheelScrollUp   { move-window-to-workspace-up; }
+}
