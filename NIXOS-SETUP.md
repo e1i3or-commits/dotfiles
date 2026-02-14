@@ -5,7 +5,7 @@
 | Component | Details |
 |-----------|---------|
 | CPU | AMD Ryzen 9 7900X (12c/24t) + integrated Radeon iGPU |
-| GPU | NVIDIA RTX 4070 Ti Super (Ada Lovelace, open kernel module) |
+| GPU | AMD XFX RX 7900 XT (RDNA 3, open-source amdgpu driver) |
 | RAM | 32GB DDR5 |
 | Kernel | Xanmod (latest) |
 | Display 1 | Samsung LC49G95T 5120x1440@120Hz (DP-2, primary ultrawide) |
@@ -222,30 +222,21 @@ The `~/nix-config` symlink itself resolves to the Nextcloud-synced repo:
 | `Mod+Shift+S` | Screenshot (selection) |
 | `Mod+Ctrl+V` | Clipboard history |
 
-## NVIDIA Troubleshooting
+## GPU Notes
 
-### GPU stalls / multi-second freezes
-- PCIe ASPM is disabled via `pcie_aspm=off` kernel param
-- GPU clocks locked at 500MHz minimum via `nvidia-gpu-clocks` systemd service
-- Memory clocks locked at 5001MHz minimum
-- PCIe D3cold disabled, runtime PM forced "on"
-- `NVreg_DynamicPowerManagement=0` prevents P-state oscillations
+### AMD RX 7900 XT (current)
+- Uses open-source `amdgpu` kernel driver + Mesa userspace — no proprietary driver needed
+- VA-API hardware video acceleration works out of the box via `radeonsi`
+- VRR should work properly with AMD + Niri (can be enabled in niri config if desired)
+- No GPU clock locking or power management hacks needed
+- No `debug { render-drm-device }` needed in niri — only one dGPU, auto-detected
 
-### Wrong GPU rendering (iGPU instead of NVIDIA)
-- Niri debug block forces `render-drm-device "/dev/dri/card1"` (NVIDIA)
-- AMD iGPU is card2/renderD129, NVIDIA is card1/renderD128
-
-### VRR flickering
-- VRR is disabled in niri config (NVIDIA+Niri combination causes flickering)
-
-### Compositor VRAM issues
-- NVIDIA application profile sets `GLVidHeapReuseRatio=0` for niri
-- Located at `/etc/nvidia/nvidia-application-profiles-rc.d/50-niri-buffer.json`
-
-### Things that DON'T work (avoid these)
-- `WLR_NO_HARDWARE_CURSORS` - causes cursor lag with driver 560+
-- Qt render variables (`QSG_RENDER_LOOP`, `QSG_RHI_BACKEND`, `__GL_SYNC_TO_VBLANK`) - gray screen refresh
-- DMS/Quickshell - system crashes with NVIDIA
+### Previous NVIDIA notes (archived)
+- PCIe ASPM caused multi-second GPU stalls — was disabled with `pcie_aspm=off`
+- GPU dropped to P8/210MHz idle causing wake-up stalls — required clock locking
+- VRR caused flickering on NVIDIA+Niri
+- Required `render-drm-device "/dev/dri/card1"` to prevent iGPU rendering
+- NVIDIA application profile `GLVidHeapReuseRatio=0` was needed for VRAM management
 
 ## Adding New Dotfiles
 

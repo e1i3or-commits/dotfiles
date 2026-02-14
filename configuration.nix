@@ -66,17 +66,10 @@ XMLEOF
 
   # Kernel parameters
   boot.kernelParams = [
-    "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-    "nvidia.NVreg_EnableGpuFirmware=1"                 # Explicitly enable GSP firmware (default for open module)
-    "nvidia.NVreg_DynamicPowerManagement=0"            # Disable NVIDIA runtime PM - driver 580 defaults to 3, causing P-state oscillations
-    "pcie_aspm=off"                                    # Disable PCIe power management - prevents multi-second GPU stalls
     "amd_pstate=active"                                # Hardware-managed CPU frequency scaling for Zen 4
     "nowatchdog"                                       # Reduce unnecessary interrupts
     "nmi_watchdog=0"                                   # Disable NMI watchdog (not needed on desktop)
   ];
-
-  # Prevent nova_core from binding to NVIDIA GPU before proprietary driver (kernel 6.18+)
-  boot.blacklistedKernelModules = [ "nova_core" ];
 
   # Tmpfs for /tmp - faster builds, less SSD wear
   boot.tmp = {
@@ -137,7 +130,7 @@ XMLEOF
   # Enable Niri (Wayland compositor)
   programs.niri.enable = true;
 
-  # DMS disabled - causes gray screen refresh issues with NVIDIA + Wayland
+  # DMS disabled - not currently used
   # programs.dms-shell.enable = true;
 
   # Waybar - stable status bar for Wayland
@@ -243,73 +236,14 @@ XMLEOF
     autoStart = true;
   };
 
-  # NVIDIA Configuration
+  # AMD GPU (RX 7900 XT) - uses open-source amdgpu driver + Mesa
   hardware.graphics.enable = true;
-  hardware.graphics.extraPackages = with pkgs; [
-    nvidia-vaapi-driver  # Hardware video acceleration
-    libva-vdpau-driver   # VA-API to VDPAU translation layer
-  ];
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;   # Enable suspend/resume VRAM save (works with PreserveVideoMemoryAllocations)
-    powerManagement.finegrained = false;
-    open = true;  # Open kernel module (recommended for RTX 40-series / Ada Lovelace)
-    nvidiaSettings = true;
-    nvidiaPersistenced = true;  # Keep GPU state persistent to prevent micro-freezes
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
 
-  # Prevent GPU from entering deep idle states while driving high-refresh displays
-  # Locks minimum GPU clock at 500MHz and disables PCIe D3cold power state
-  systemd.services.nvidia-gpu-clocks = {
-    description = "Lock NVIDIA GPU minimum clocks for desktop compositing";
-    after = [ "nvidia-persistenced.service" ];
-    requires = [ "nvidia-persistenced.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "nvidia-gpu-clocks-start" ''
-        # Lock GPU clocks: minimum 500MHz (prevents P8 idle dropping to 210MHz)
-        ${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-gpu-clocks=500,3120 || true
-        # Lock memory clocks: minimum 5001MHz prevents deep idle (810MHz->5001MHz ramp causes multi-second stalls)
-        ${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-memory-clocks=5001,10501 || true
-        # Disable D3cold - prevents deepest PCIe power state on active GPU
-        echo 0 > /sys/bus/pci/devices/0000:01:00.0/d3cold_allowed || true
-        # Force PCIe runtime PM to "on" (always active)
-        echo on > /sys/bus/pci/devices/0000:01:00.0/power/control || true
-      '';
-      ExecStop = pkgs.writeShellScript "nvidia-gpu-clocks-stop" ''
-        ${config.hardware.nvidia.package.bin}/bin/nvidia-smi --reset-gpu-clocks || true
-        ${config.hardware.nvidia.package.bin}/bin/nvidia-smi --reset-memory-clocks || true
-      '';
-    };
-  };
-
-  # NVIDIA application profile for Niri - fixes VRAM management
-  environment.etc."nvidia/nvidia-application-profiles-rc.d/50-niri-buffer.json".text = ''
-    {
-      "rules": [{
-        "pattern": {"feature": "procname", "matches": "niri"},
-        "profile": "Limit Free Buffer Pool On Wayland Compositors"
-      }],
-      "profiles": [{
-        "name": "Limit Free Buffer Pool On Wayland Compositors",
-        "settings": [{"key": "GLVidHeapReuseRatio", "value": 0}]
-      }]
-    }
-  '';
-
-  # Environment variables for NVIDIA + Wayland
-  # Note: GBM_BACKEND, __GLX_VENDOR_LIBRARY_NAME, DRI_PRIME removed - auto-detected on desktop with NVIDIA primary
-  # Note: MOZ_WEBRENDER removed - default in modern Firefox
+  # Environment variables for Wayland
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    LIBVA_DRIVER_NAME = "nvidia";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";      # Wayland with fallback for incompatible apps
     MOZ_ENABLE_WAYLAND = "1";                    # Firefox native Wayland
-    MOZ_DRM_DEVICE = "/dev/dri/renderD128";      # Use NVIDIA GPU for Firefox
     # GSettings schemas for GTK/Tauri apps (Maestro, etc.) - merged into one directory
     GSETTINGS_SCHEMA_DIR = let
       schemaDir = pkgs.runCommand "merged-gsettings-schemas" {
@@ -399,7 +333,7 @@ XMLEOF
     zip
     tree
     htop
-    (btop.override { cudaSupport = true; })
+    btop
     file
     which
 

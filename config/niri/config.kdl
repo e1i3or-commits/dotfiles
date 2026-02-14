@@ -57,15 +57,6 @@ output "eDP-1" {
 }
 
 // ============================================================================
-// GPU RENDERING - Force NVIDIA (card1) for compositing
-// Without this, niri may pick the AMD iGPU causing cross-GPU copies and stalls
-// ============================================================================
-
-debug {
-    render-drm-device "/dev/dri/card1"
-}
-
-// ============================================================================
 // LAYOUT CONFIGURATION
 // ============================================================================
 
