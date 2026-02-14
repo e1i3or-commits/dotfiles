@@ -1,4 +1,4 @@
-# Cava Configuration - Midnight Ember Theme
+# Cava Configuration - Frost Peak Theme
 
 [general]
 framerate = 60
@@ -30,15 +30,15 @@ frame_delimiter = 10
 background = default
 foreground = default
 
-# Midnight Ember gradient: orange -> cyan
+# Frost Peak gradient: deep blue -> ice blue -> violet -> snow white
 gradient = 1
 gradient_count = 6
-gradient_color_1 = '#f97316'
-gradient_color_2 = '#fb923c'
-gradient_color_3 = '#fdba74'
-gradient_color_4 = '#67e8f9'
-gradient_color_5 = '#22d3ee'
-gradient_color_6 = '#06b6d4'
+gradient_color_1 = '#1e3a5f'
+gradient_color_2 = '#38bdf8'
+gradient_color_3 = '#7dd3fc'
+gradient_color_4 = '#a78bfa'
+gradient_color_5 = '#c4b5fd'
+gradient_color_6 = '#e0e6f0'
 
 [smoothing]
 integral = 77

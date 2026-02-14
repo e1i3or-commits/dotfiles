@@ -1,12 +1,12 @@
-# Mako - Midnight Ember Theme
+# Mako - Frost Peak Theme
 
 # Appearance
 font=JetBrainsMono Nerd Font 11
-background-color=#0d1117
-text-color=#e6edf3
-border-color=#f97316
+background-color=#0c0e14
+text-color=#e0e6f0
+border-color=#38bdf8
 border-size=2
-border-radius=8
+border-radius=10
 padding=12
 margin=10
 
@@ -29,13 +29,13 @@ icon-path=/usr/share/icons/Adwaita
 
 # Urgency levels
 [urgency=low]
-border-color=#30363d
+border-color=#262a3a
 default-timeout=3000
 
 [urgency=normal]
-border-color=#f97316
+border-color=#38bdf8
 default-timeout=5000
 
 [urgency=critical]
-border-color=#ef4444
+border-color=#f87171
 default-timeout=0

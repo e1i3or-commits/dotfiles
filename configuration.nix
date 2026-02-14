@@ -2,13 +2,12 @@
 # your system. Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running 'nixos-help').
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      <home-manager/nixos>
     ];
 
   # Frost Peak GDM Theme - patch gnome-shell's theme gresource with custom colors
@@ -175,7 +174,7 @@ XMLEOF
 
   environment.etc."gdm/frost-peak-logo.svg".source = ./gdm-theme/frost-peak-logo.svg;
 
-  environment.etc."gdm/wallpaper.jpg".source = /home/kaika/Pictures/Wallpapers/aishot-769.jpg;
+  environment.etc."gdm/wallpaper.jpg".source = ./gdm-theme/wallpaper.jpg;
 
   # GDM monitor layout - main display on DP-2 (ultrawide), vertical on DP-3
   environment.etc."gdm/monitors.xml".text = ''
@@ -274,8 +273,8 @@ XMLEOF
       ExecStart = pkgs.writeShellScript "nvidia-gpu-clocks-start" ''
         # Lock GPU clocks: minimum 500MHz (prevents P8 idle dropping to 210MHz)
         ${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-gpu-clocks=500,3120 || true
-        # Lock memory clocks: prevents wild 810MHz<->10501MHz oscillations at idle
-        ${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-memory-clocks=810,10501 || true
+        # Lock memory clocks: minimum 5001MHz prevents deep idle (810MHz->5001MHz ramp causes multi-second stalls)
+        ${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-memory-clocks=5001,10501 || true
         # Disable D3cold - prevents deepest PCIe power state on active GPU
         echo 0 > /sys/bus/pci/devices/0000:01:00.0/d3cold_allowed || true
         # Force PCIe runtime PM to "on" (always active)
@@ -376,11 +375,6 @@ XMLEOF
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Home Manager settings
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.backupFileExtension = "backup";
-
   # Enable Docker
   virtualisation.docker = {
     enable = true;
@@ -444,7 +438,8 @@ XMLEOF
     thunar
     thunar-volman
     thunar-archive-plugin
-    xfce.tumbler        # Thumbnail service for Thunar
+    xfconf              # xfconf daemon - needed for Thunar settings persistence
+    tumbler             # Thumbnail service for Thunar
     ffmpegthumbnailer   # Video thumbnails
 
     # Cloud storage
@@ -540,7 +535,7 @@ XMLEOF
       "HardwareAccelerationModeEnabled" = true;
     };
   };
-  environment.sessionVariables.CHROMIUM_FLAGS = "--enable-features=UseOzonePlatform,VaapiVideoDecoder,VaapiVideoEncoder --ozone-platform=wayland --enable-gpu-rasterization --enable-zero-copy --ignore-gpu-blocklist";
+  environment.sessionVariables.CHROMIUM_FLAGS = "--enable-features=UseOzonePlatform,VaapiVideoEncoder,WebRTCPipeWireCapturer,WebRTCAllowH264Receive,WebRTCAllowH264Send --ozone-platform=wayland --enable-gpu-rasterization --enable-zero-copy --ignore-gpu-blocklist";
 
   # Enable nix-ld for running prebuilt binaries (Claude Code, Zoho WorkDrive, etc.)
   programs.nix-ld.enable = true;
@@ -554,25 +549,25 @@ XMLEOF
     fuse3
     libGL
     libxkbcommon
-    xorg.libX11
-    xorg.libXext
-    xorg.libXrender
-    xorg.libxcb
-    xorg.xcbutilwm
-    xorg.xcbutilimage
-    xorg.xcbutilkeysyms
-    xorg.xcbutilrenderutil
-    xorg.xcbutilcursor
-    xorg.libxshmfence
-    xorg.libxkbfile
-    xorg.libXcomposite
-    xorg.libXdamage
-    xorg.libXfixes
-    xorg.libXrandr
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXtst
-    xorg.libXScrnSaver
+    libx11
+    libxext
+    libxrender
+    libxcb
+    libxcb-wm
+    libxcb-image
+    libxcb-keysyms
+    libxcb-render-util
+    libxcb-cursor
+    libxshmfence
+    libxkbfile
+    libxcomposite
+    libxdamage
+    libxfixes
+    libxrandr
+    libxcursor
+    libxi
+    libxtst
+    libxscrnsaver
     fontconfig
     freetype
     dbus
@@ -709,532 +704,6 @@ XMLEOF
   services.locate = {
     enable = true;
     package = pkgs.plocate;
-  };
-
-  # Home Manager configuration for kaika
-  home-manager.users.kaika = { pkgs, config, lib, ... }: {
-    home.stateVersion = "24.11";
-    home.enableNixpkgsReleaseCheck = false;  # Allow version mismatch
-
-    home.packages = with pkgs; [];
-
-    # Git configuration
-    programs.git = {
-      enable = true;
-      settings = {
-        user.name = "kaika";
-        user.email = "kaikaapro@gmail.com";
-        init.defaultBranch = "main";
-        pull.rebase = false;
-      };
-    };
-
-    # Fish shell configuration
-    programs.fish = {
-      enable = true;
-      shellAbbrs = {
-        g = "git";
-        ga = "git add";
-        gc = "git commit";
-        gp = "git push";
-        gs = "git status";
-        gd = "git diff";
-        gl = "git log";
-        nrs = "sudo nixos-rebuild switch";
-        nrt = "sudo nixos-rebuild test";
-        cat = "bat";
-        ls = "eza";
-        ll = "eza -l";
-        la = "eza -la";
-        tree = "eza --tree";
-      };
-      shellAliases = {
-        cd = "z";
-      };
-      interactiveShellInit = ''
-        # Starship prompt (handled by programs.starship)
-        set fish_greeting ""
-        # Add custom scripts and npm global to PATH
-        fish_add_path ~/.local/bin
-        fish_add_path ~/.npm-global/bin
-        # Midnight Ember fish colors
-        set -g fish_color_autosuggestion 484f58
-        set -g fish_color_command 22c55e
-        set -g fish_color_param e6edf3
-        set -g fish_color_error ef4444
-        set -g fish_color_quote eab308
-        set -g fish_color_operator 22d3ee
-        # Show fastfetch on new terminal
-        if status is-interactive
-          fastfetch
-        end
-      '';
-    };
-
-    # Thunar - default to list view (must be a real writable file, not a symlink)
-    home.activation.thunarConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      thunarrc="$HOME/.config/Thunar/thunarrc"
-      mkdir -p "$(dirname "$thunarrc")"
-      if [ ! -f "$thunarrc" ] || [ -L "$thunarrc" ]; then
-        rm -f "$thunarrc"
-        cat > "$thunarrc" << 'EOF'
-[Configuration]
-DefaultView=ThunarDetailsView
-LastView=ThunarDetailsView
-EOF
-      fi
-    '';
-
-    # Kitty terminal configuration - Frost Peak theme
-    programs.kitty = {
-      enable = true;
-      settings = {
-        # Window
-        background_opacity = "0.92";
-        window_padding_width = 12;
-        confirm_os_window_close = 0;
-
-        # Font
-        font_family = "JetBrainsMono Nerd Font";
-        bold_font = "JetBrainsMono Nerd Font Bold";
-        italic_font = "JetBrainsMono Nerd Font Italic";
-        font_size = 12;
-
-        # Frost Peak colors
-        background = "#0c0e14";
-        foreground = "#e0e6f0";
-        cursor = "#38bdf8";
-        cursor_text_color = "#0c0e14";
-        selection_background = "#1e3a5f";
-        selection_foreground = "none";
-
-        # Normal colors
-        color0 = "#262a3a";
-        color1 = "#f87171";
-        color2 = "#34d399";
-        color3 = "#f59e0b";
-        color4 = "#38bdf8";
-        color5 = "#a78bfa";
-        color6 = "#22d3ee";
-        color7 = "#e0e6f0";
-
-        # Bright colors
-        color8 = "#3a3f52";
-        color9 = "#fca5a5";
-        color10 = "#6ee7b7";
-        color11 = "#fbbf24";
-        color12 = "#7dd3fc";
-        color13 = "#c4b5fd";
-        color14 = "#67e8f9";
-        color15 = "#ffffff";
-
-        # Cursor
-        cursor_shape = "block";
-        cursor_blink_interval = 0;
-
-        # Shell integration
-        shell_integration = "enabled";
-      };
-    };
-
-    # Bat configuration
-    programs.bat = {
-      enable = true;
-      config = { theme = "TwoDark"; paging = "auto"; };
-    };
-
-    # Zoxide configuration
-    programs.zoxide = {
-      enable = true;
-      enableFishIntegration = true;
-    };
-
-    # fzf configuration
-    programs.fzf = {
-      enable = true;
-      enableFishIntegration = true;
-    };
-
-    # Starship prompt - Frost Peak style
-    programs.starship = {
-      enable = true;
-      enableFishIntegration = true;
-      settings = {
-        format = "$directory$git_branch$git_status$cmd_duration$line_break$character";
-        directory = {
-          style = "bold #22d3ee";
-          truncation_length = 3;
-          truncate_to_repo = true;
-        };
-        git_branch = {
-          symbol = " ";
-          style = "bold #a78bfa";
-        };
-        git_status = {
-          style = "bold #a78bfa";
-          staged = "[+$count](bold #34d399)";
-          modified = "[~$count](bold #f59e0b)";
-          untracked = "[?$count](bold #38bdf8)";
-        };
-        cmd_duration = {
-          min_time = 2000;
-          style = "bold #3a3f52";
-        };
-        character = {
-          success_symbol = "[❯](bold #38bdf8)";
-          error_symbol = "[❯](bold #f87171)";
-        };
-      };
-    };
-
-    # GTK dark theme - Midnight Ember
-    gtk = {
-      enable = true;
-      theme = {
-        name = "Adwaita-dark";
-        package = pkgs.gnome-themes-extra;
-      };
-      iconTheme = {
-        name = "Papirus-Dark";
-        package = pkgs.papirus-icon-theme;
-      };
-      cursorTheme = {
-        name = "Bibata-Modern-Ice";
-        package = pkgs.bibata-cursors;
-        size = 24;
-      };
-      gtk3.extraConfig = {
-        gtk-application-prefer-dark-theme = true;
-      };
-      gtk4.extraConfig = {
-        gtk-application-prefer-dark-theme = true;
-      };
-      # Frost Peak CSS overrides
-      gtk3.extraCss = ''
-        /* Frost Peak GTK3 Theme */
-        @define-color accent_color #38bdf8;
-        @define-color accent_bg_color #38bdf8;
-        @define-color accent_fg_color #06080c;
-        @define-color window_bg_color rgba(12, 14, 20, 0.92);
-        @define-color window_fg_color #e0e6f0;
-        @define-color view_bg_color rgba(6, 8, 12, 0.92);
-        @define-color view_fg_color #e0e6f0;
-        @define-color headerbar_bg_color rgba(6, 8, 12, 0.95);
-        @define-color headerbar_fg_color #e0e6f0;
-        @define-color card_bg_color rgba(20, 22, 32, 0.9);
-        @define-color card_fg_color #e0e6f0;
-        @define-color popover_bg_color rgba(20, 22, 32, 0.95);
-        @define-color popover_fg_color #e0e6f0;
-        @define-color sidebar_bg_color rgba(6, 8, 12, 0.92);
-        @define-color sidebar_fg_color #e0e6f0;
-
-        window, .background {
-          background-color: rgba(12, 14, 20, 0.92);
-        }
-
-        headerbar, .titlebar {
-          background-color: rgba(6, 8, 12, 0.95);
-          border-bottom: 1px solid #262a3a;
-        }
-
-        .sidebar, .navigation-sidebar {
-          background-color: rgba(6, 8, 12, 0.92);
-        }
-
-        /* Ensure all content views are transparent (Thunar, Nautilus, etc.) */
-        .view, treeview, iconview, textview text, list, placessidebar, placesview {
-          background-color: rgba(6, 8, 12, 0.92);
-        }
-
-        treeview header button {
-          background-color: rgba(6, 8, 12, 0.95);
-          border-color: #262a3a;
-        }
-
-        toolbar, .toolbar, .path-bar, .linked button {
-          background-color: rgba(12, 14, 20, 0.92);
-        }
-
-        statusbar, .statusbar {
-          background-color: rgba(6, 8, 12, 0.92);
-        }
-
-        paned separator {
-          background-color: #262a3a;
-        }
-
-        button:checked, button.suggested-action {
-          background-color: #38bdf8;
-          color: #06080c;
-        }
-
-        button:checked:hover, button.suggested-action:hover {
-          background-color: #7dd3fc;
-        }
-
-        selection, *:selected {
-          background-color: rgba(56, 189, 248, 0.35);
-        }
-
-        row:selected, treeview:selected {
-          background-color: rgba(56, 189, 248, 0.25);
-        }
-
-        check:checked, radio:checked {
-          background-color: #38bdf8;
-          color: #06080c;
-        }
-
-        progressbar progress {
-          background-color: #38bdf8;
-        }
-
-        scale highlight {
-          background-color: #38bdf8;
-        }
-
-        switch:checked slider {
-          background-color: #38bdf8;
-        }
-
-        entry:focus, treeview:focus, textview:focus {
-          border-color: #38bdf8;
-          box-shadow: 0 0 0 1px #38bdf8;
-        }
-
-        scrollbar slider {
-          background-color: #3a3f52;
-        }
-
-        scrollbar slider:hover {
-          background-color: #38bdf8;
-        }
-      '';
-      gtk4.extraCss = ''
-        /* Frost Peak GTK4 Theme */
-        @define-color accent_color #38bdf8;
-        @define-color accent_bg_color #38bdf8;
-        @define-color accent_fg_color #06080c;
-        @define-color window_bg_color rgba(12, 14, 20, 0.92);
-        @define-color window_fg_color #e0e6f0;
-        @define-color view_bg_color rgba(6, 8, 12, 0.92);
-        @define-color view_fg_color #e0e6f0;
-        @define-color headerbar_bg_color rgba(6, 8, 12, 0.95);
-        @define-color headerbar_fg_color #e0e6f0;
-        @define-color card_bg_color rgba(20, 22, 32, 0.9);
-        @define-color card_fg_color #e0e6f0;
-        @define-color popover_bg_color rgba(20, 22, 32, 0.95);
-        @define-color popover_fg_color #e0e6f0;
-        @define-color sidebar_bg_color rgba(6, 8, 12, 0.92);
-        @define-color sidebar_fg_color #e0e6f0;
-
-        window, .background {
-          background-color: rgba(12, 14, 20, 0.92);
-        }
-
-        headerbar, .titlebar {
-          background-color: rgba(6, 8, 12, 0.95);
-          border-bottom: 1px solid #262a3a;
-        }
-
-        .sidebar-pane, .navigation-sidebar {
-          background-color: rgba(6, 8, 12, 0.92);
-        }
-
-        listview, columnview, gridview, textview text {
-          background-color: rgba(6, 8, 12, 0.92);
-        }
-
-        separator {
-          background-color: #262a3a;
-        }
-
-        statusbar, actionbar {
-          background-color: rgba(6, 8, 12, 0.92);
-        }
-
-        button:checked, button.suggested-action {
-          background-color: #38bdf8;
-          color: #06080c;
-        }
-
-        selection, *:selected {
-          background-color: rgba(56, 189, 248, 0.35);
-        }
-
-        row:selected {
-          background-color: rgba(56, 189, 248, 0.25);
-        }
-
-        check:checked, radio:checked {
-          background-color: #38bdf8;
-        }
-
-        progressbar > trough > progress {
-          background-color: #38bdf8;
-        }
-
-        scale > trough > highlight {
-          background-color: #38bdf8;
-        }
-
-        entry:focus-within {
-          outline-color: #38bdf8;
-        }
-
-        scrollbar > range > trough > slider {
-          background-color: #3a3f52;
-        }
-
-        scrollbar > range > trough > slider:hover {
-          background-color: #38bdf8;
-        }
-      '';
-    };
-
-    # Qt dark theme
-    qt = {
-      enable = true;
-      platformTheme.name = "adwaita";
-      style.name = "adwaita-dark";
-    };
-
-    # VSCode configuration - Frost Peak theme
-    programs.vscode = {
-      enable = true;
-      profiles.default.extensions = with pkgs.vscode-extensions; [
-        ms-python.python
-        ms-vscode.cpptools
-        bbenoist.nix
-        eamodio.gitlens
-        pkief.material-icon-theme
-        esbenp.prettier-vscode
-        dbaeumer.vscode-eslint
-      ];
-      profiles.default.userSettings = {
-        # Frost Peak color overrides
-        "workbench.colorTheme" = "Default Dark Modern";
-        "workbench.colorCustomizations" = {
-          # Background colors - deep void blacks
-          "editor.background" = "#0c0e14";
-          "sideBar.background" = "#06080c";
-          "sideBarSectionHeader.background" = "#0c0e14";
-          "activityBar.background" = "#06080c";
-          "panel.background" = "#06080c";
-          "terminal.background" = "#0c0e14";
-          "titleBar.activeBackground" = "#06080c";
-          "titleBar.inactiveBackground" = "#06080c";
-          "tab.activeBackground" = "#0c0e14";
-          "tab.inactiveBackground" = "#06080c";
-          "editorGroupHeader.tabsBackground" = "#06080c";
-          "statusBar.background" = "#06080c";
-          "statusBar.noFolderBackground" = "#06080c";
-          "statusBar.debuggingBackground" = "#a78bfa";
-
-          # Ice blue accent colors
-          "activityBarBadge.background" = "#38bdf8";
-          "activityBar.activeBorder" = "#38bdf8";
-          "tab.activeBorder" = "#38bdf8";
-          "focusBorder" = "#38bdf8";
-          "textLink.foreground" = "#38bdf8";
-          "textLink.activeForeground" = "#7dd3fc";
-          "progressBar.background" = "#38bdf8";
-          "editorCursor.foreground" = "#38bdf8";
-          "terminalCursor.foreground" = "#38bdf8";
-          "selection.background" = "#38bdf835";
-          "editor.selectionBackground" = "#38bdf835";
-          "editor.selectionHighlightBackground" = "#38bdf825";
-          "list.activeSelectionBackground" = "#38bdf835";
-          "list.focusBackground" = "#38bdf825";
-          "list.highlightForeground" = "#38bdf8";
-          "button.background" = "#38bdf8";
-          "button.foreground" = "#06080c";
-          "button.hoverBackground" = "#7dd3fc";
-
-          # Violet secondary accents
-          "editorLineNumber.activeForeground" = "#a78bfa";
-          "editorBracketHighlight.foreground1" = "#38bdf8";
-          "editorBracketHighlight.foreground2" = "#a78bfa";
-          "editorBracketHighlight.foreground3" = "#f59e0b";
-          "gitDecoration.modifiedResourceForeground" = "#f59e0b";
-          "gitDecoration.untrackedResourceForeground" = "#34d399";
-          "gitDecoration.deletedResourceForeground" = "#f87171";
-
-          # Borders
-          "sideBar.border" = "#262a3a";
-          "panel.border" = "#262a3a";
-          "editorGroup.border" = "#262a3a";
-          "tab.border" = "#262a3a";
-        };
-
-        # Editor token color customizations
-        "editor.tokenColorCustomizations" = {
-          "comments" = "#3a3f52";
-          "strings" = "#34d399";
-          "keywords" = "#a78bfa";
-          "numbers" = "#f59e0b";
-          "functions" = "#38bdf8";
-          "variables" = "#e0e6f0";
-          "types" = "#22d3ee";
-        };
-
-        # Editor settings
-        "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'Droid Sans Mono', monospace";
-        "editor.fontSize" = 14;
-        "editor.fontLigatures" = true;
-        "editor.cursorBlinking" = "solid";
-        "editor.cursorStyle" = "block";
-        "editor.minimap.enabled" = false;
-        "editor.renderWhitespace" = "selection";
-        "editor.bracketPairColorization.enabled" = true;
-
-        # Terminal
-        "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
-        "terminal.integrated.fontSize" = 12;
-
-        # Window
-        "window.titleBarStyle" = "custom";
-        "window.menuBarVisibility" = "toggle";
-
-        # File icons
-        "workbench.iconTheme" = "material-icon-theme";
-      };
-    };
-
-    # Environment variables
-    home.sessionVariables = {
-      EDITOR = "code";
-      VISUAL = "code";
-      TERMINAL = "kitty";
-      BROWSER = "firefox";
-    };
-
-    # XDG user directories
-    xdg.enable = true;
-    xdg.userDirs = {
-      enable = true;
-      createDirectories = true;
-      desktop = "${config.home.homeDirectory}/Desktop";
-      documents = "${config.home.homeDirectory}/Documents";
-      download = "${config.home.homeDirectory}/Downloads";
-      music = "${config.home.homeDirectory}/Music";
-      pictures = "${config.home.homeDirectory}/Pictures";
-      videos = "${config.home.homeDirectory}/Videos";
-      templates = "${config.home.homeDirectory}/Templates";
-      publicShare = "${config.home.homeDirectory}/Public";
-    };
-
-    # Set Firefox as default browser
-    xdg.mimeApps = {
-      enable = true;
-      defaultApplications = {
-        "text/html" = "firefox.desktop";
-        "x-scheme-handler/http" = "firefox.desktop";
-        "x-scheme-handler/https" = "firefox.desktop";
-        "x-scheme-handler/about" = "firefox.desktop";
-        "x-scheme-handler/unknown" = "firefox.desktop";
-      };
-    };
   };
 
   system.stateVersion = "24.11";

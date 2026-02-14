@@ -1,5 +1,5 @@
-// Niri Configuration - VIBE MODE (Midnight Ember Theme)
-// Full rice: gaps, transparency, smooth animations
+// Niri Configuration - Frost Peak Theme
+// Full rice: gaps, smooth animations, ice blue accents
 // Toggle with Super+Shift+V
 
 // ============================================================================
@@ -36,10 +36,19 @@ input {
 // OUTPUT CONFIGURATION
 // ============================================================================
 
-// Samsung Odyssey G9 (49" ultrawide)
-output "DP-3" {
+// Samsung LC49G95T (49" super ultrawide) - Main display
+output "DP-2" {
     mode "5120x1440@119.999"
+    scale 1.0
+    position x=0 y=0
+}
+
+// Samsung LC34G55T (34" ultrawide) - Vertical, right of main
+output "DP-3" {
+    mode "3440x1440@99.982"
     scale 1.25
+    transform "90"
+    position x=5120 y=0
 }
 
 // Laptop display (if connected)
@@ -48,7 +57,16 @@ output "eDP-1" {
 }
 
 // ============================================================================
-// LAYOUT - VIBE MODE (gaps, rounded corners feel)
+// GPU RENDERING - Force NVIDIA (card1) for compositing
+// Without this, niri may pick the AMD iGPU causing cross-GPU copies and stalls
+// ============================================================================
+
+debug {
+    render-drm-device "/dev/dri/card1"
+}
+
+// ============================================================================
+// LAYOUT CONFIGURATION
 // ============================================================================
 
 layout {
@@ -64,17 +82,17 @@ layout {
 
     default-column-width { proportion 0.5; }
 
-    // Midnight Ember focus ring - Orange accent
+    // Frost Peak focus ring - Ice blue accent
     focus-ring {
         width 1
-        active-color "#f97316"
-        inactive-color "#30363d"
+        active-color "#38bdf8"
+        inactive-color "#262a3a"
     }
 
     border {
         width 1
-        active-color "#f97316"
-        inactive-color "#161b22"
+        active-color "#38bdf8"
+        inactive-color "#141620"
     }
 }
 
@@ -82,6 +100,7 @@ layout {
 // SPAWN AT STARTUP
 // ============================================================================
 
+spawn-at-startup "swaybg" "-i" "/home/kaika/Pictures/Wallpapers/aishot-769.jpg" "-m" "fill"
 spawn-at-startup "mako"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 spawn-at-startup "swayidle" "-w"
@@ -119,7 +138,7 @@ prefer-no-csd
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 // ============================================================================
-// ANIMATIONS - VIBE MODE (smooth, expressive)
+// ANIMATIONS
 // ============================================================================
 
 animations {
@@ -398,7 +417,7 @@ binds {
     Mod+Ctrl+T { spawn "kitty" "btop"; }
 
     // ========================================================================
-    // TUI APPS (Midnight Ember suite)
+    // TUI APPS
     // ========================================================================
 
     // Yazi file manager
@@ -441,7 +460,7 @@ binds {
     Mod+Shift+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; }
     Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && grim -g \"$(slurp)\" ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
     Mod+Print { spawn "sh" "-c" "grim ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
-    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | wofi --dmenu | cliphist decode | wl-copy"; }
+    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
 
     // ========================================================================
     // MEDIA KEYS

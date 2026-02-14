@@ -1,13 +1,13 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 34,
+    "height": 38,
     "spacing": 0,
     "margin-top": 6,
     "margin-left": 10,
     "margin-right": 10,
 
-    "modules-left": ["niri/workspaces"],
+    "modules-left": ["niri/workspaces", "custom/cava"],
     "modules-center": ["clock"],
     "modules-right": ["pulseaudio", "network", "battery", "tray"],
 
@@ -20,6 +20,12 @@
         "on-click": "activate"
     },
 
+    "custom/cava": {
+        "exec": "$HOME/.config/waybar/scripts/visualizer.sh",
+        "return-type": "json",
+        "tooltip": false
+    },
+
     "clock": {
         "format": "{:%a %b %d  %H:%M}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
@@ -27,11 +33,11 @@
             "mode": "month",
             "weeks-pos": "right",
             "format": {
-                "months": "<span color='#f97316'><b>{}</b></span>",
-                "days": "<span color='#e6edf3'>{}</span>",
-                "weeks": "<span color='#22d3ee'>W{}</span>",
-                "weekdays": "<span color='#30363d'>{}</span>",
-                "today": "<span color='#f97316'><b><u>{}</u></b></span>"
+                "months": "<span color='#38bdf8'><b>{}</b></span>",
+                "days": "<span color='#e0e6f0'>{}</span>",
+                "weeks": "<span color='#a78bfa'>W{}</span>",
+                "weekdays": "<span color='#3a3f52'>{}</span>",
+                "today": "<span color='#38bdf8'><b><u>{}</u></b></span>"
             }
         }
     },
