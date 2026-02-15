@@ -10,51 +10,6 @@
       ./hardware-configuration.nix
     ];
 
-  # Frost Peak GDM Theme - patch gnome-shell's theme gresource with custom colors
-  # Note: This causes gnome-shell to build from source (~5 min on Ryzen 9 7900X)
-  nixpkgs.overlays = [(final: prev: {
-    gnome-shell = prev.gnome-shell.overrideAttrs (old: {
-      nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ final.glib.dev ];
-      postInstall = (old.postInstall or "") + ''
-        echo "Patching gnome-shell theme with Frost Peak colors..."
-        GRESOURCE=$out/share/gnome-shell/gnome-shell-theme.gresource
-        WRKDIR=$(pwd)/frost-peak-tmp
-        mkdir -p $WRKDIR
-
-        for res in $(gresource list $GRESOURCE); do
-          mkdir -p "$WRKDIR/$(dirname "$res")"
-          gresource extract $GRESOURCE "$res" > "$WRKDIR/$res"
-        done
-
-        cat ${./gdm-theme/frost-peak-overrides.css} >> $WRKDIR/org/gnome/shell/theme/gnome-shell-dark.css
-
-        cat > $WRKDIR/gnome-shell-theme.gresource.xml << 'XMLEOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<gresources>
-  <gresource prefix="/org/gnome/shell/theme">
-    <file>calendar-today-light.svg</file>
-    <file>calendar-today.svg</file>
-    <file>gnome-shell-dark.css</file>
-    <file>gnome-shell-high-contrast.css</file>
-    <file>gnome-shell-light.css</file>
-    <file>gnome-shell-start.svg</file>
-    <file>pad-osd.css</file>
-    <file>workspace-placeholder.svg</file>
-  </gresource>
-</gresources>
-XMLEOF
-
-        glib-compile-resources \
-          --sourcedir=$WRKDIR/org/gnome/shell/theme \
-          --target=$GRESOURCE \
-          $WRKDIR/gnome-shell-theme.gresource.xml
-
-        rm -rf $WRKDIR
-        echo "Frost Peak GDM theme applied."
-      '';
-    });
-  })];
-
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;  # Keep only 10 generations in boot menu
@@ -140,96 +95,106 @@ XMLEOF
   # UPower (for Noctalia power status)
   services.upower.enable = true;
 
-  # Enable GDM (GNOME Display Manager) with Wayland
+  # greetd + regreet (lightweight GTK4 Wayland greeter)
   services.xserver.enable = true;
-  services.displayManager.gdm = {
+  services.greetd = {
     enable = true;
-    wayland = true;
-    banner = "Welcome";
+    settings = {
+      default_session = {
+        command = "${pkgs.cage}/bin/cage -s -m last -- ${pkgs.greetd.regreet}/bin/regreet";
+        user = "greeter";
+      };
+    };
   };
 
-  # GDM Frost Peak greeter settings
-  environment.etc."gdm/greeter.dconf-defaults".text = ''
-    [org/gnome/desktop/background]
-    picture-uri='file:///etc/gdm/wallpaper.jpg'
-    picture-uri-dark='file:///etc/gdm/wallpaper.jpg'
-    picture-options='zoom'
-    primary-color='#0c0e14'
+  programs.regreet = {
+    enable = true;
 
-    [org/gnome/desktop/interface]
-    color-scheme='prefer-dark'
-    accent-color='blue'
-    font-name='JetBrainsMono Nerd Font 11'
-    cursor-theme='Adwaita'
-    enable-animations=true
+    font = {
+      name = "JetBrainsMono Nerd Font";
+      size = 14;
+    };
 
-    [org/gnome/login-screen]
-    logo='file:///etc/gdm/frost-peak-logo.svg'
-    banner-message-enable=true
-    banner-message-text='Welcome to Frost Peak'
-  '';
+    cursorTheme = {
+      name = "Bibata-Modern-Ice";
+      package = pkgs.bibata-cursors;
+    };
 
-  environment.etc."gdm/frost-peak-logo.svg".source = ./gdm-theme/frost-peak-logo.svg;
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
 
-  environment.etc."gdm/wallpaper.jpg".source = ./gdm-theme/wallpaper.jpg;
+    settings = {
+      background = {
+        path = "/etc/greetd/wallpaper.jpg";
+        fit = "Cover";
+      };
+      GTK = {
+        application_prefer_dark_theme = true;
+      };
+      commands = {
+        reboot = [ "systemctl" "reboot" ];
+        poweroff = [ "systemctl" "poweroff" ];
+      };
+    };
 
-  # GDM monitor layout - main display on DP-3 (ultrawide), vertical on DP-2
-  environment.etc."gdm/monitors.xml".text = ''
-    <monitors version="2">
-      <configuration>
-        <logicalmonitor>
-          <x>0</x>
-          <y>0</y>
-          <scale>1</scale>
-          <primary>yes</primary>
-          <monitor>
-            <monitorspec>
-              <connector>DP-3</connector>
-              <vendor>SAM</vendor>
-              <product>LC49G95T</product>
-              <serial>HCSW402682</serial>
-            </monitorspec>
-            <mode>
-              <width>5120</width>
-              <height>1440</height>
-              <rate>119.999</rate>
-            </mode>
-          </monitor>
-        </logicalmonitor>
-        <logicalmonitor>
-          <x>5120</x>
-          <y>0</y>
-          <scale>1.25</scale>
-          <transform>
-            <rotation>left</rotation>
-            <flipped>no</flipped>
-          </transform>
-          <monitor>
-            <monitorspec>
-              <connector>DP-2</connector>
-              <vendor>SAM</vendor>
-              <product>LC34G55T</product>
-              <serial>H4ZRA01202</serial>
-            </monitorspec>
-            <mode>
-              <width>3440</width>
-              <height>1440</height>
-              <rate>99.982</rate>
-            </mode>
-          </monitor>
-        </logicalmonitor>
-      </configuration>
-    </monitors>
-  '';
+    extraCss = ''
+      /* Frost Peak regreet theme */
+      window {
+        background-color: #0c0e14;
+      }
 
-  # GDM user home must point to /run/gdm so the greeter finds monitors.xml
-  users.users.gdm.home = "/run/gdm";
+      entry {
+        background-color: #141620;
+        color: #e0e6f0;
+        border: 1px solid #262a3a;
+        border-radius: 10px;
+        padding: 8px 14px;
+      }
 
-  # Symlink monitors.xml into GDM's config directory
-  systemd.tmpfiles.rules = [
-    "d /run/gdm/.config 0711 gdm gdm"
-    "L+ /run/gdm/.config/monitors.xml - - - - /etc/gdm/monitors.xml"
-  ];
+      entry:focus {
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+      }
+
+      button {
+        background-color: #141620;
+        color: #e0e6f0;
+        border: 1px solid #262a3a;
+        border-radius: 10px;
+      }
+
+      button:hover {
+        background-color: #1a1d2a;
+        border-color: rgba(56, 189, 248, 0.3);
+        color: #38bdf8;
+      }
+
+      button.suggested-action {
+        background-color: #38bdf8;
+        color: #0c0e14;
+        border: none;
+        font-weight: bold;
+      }
+
+      button.suggested-action:hover {
+        background-color: #4ec9f1;
+      }
+
+      label {
+        color: #e0e6f0;
+      }
+
+      combobox button {
+        background-color: #141620;
+        border: 1px solid #262a3a;
+      }
+    '';
+  };
+
+  # Wallpaper for regreet greeter
+  environment.etc."greetd/wallpaper.jpg".source = ./gdm-theme/wallpaper.jpg;
 
   # Enable XWayland for compatibility
   programs.xwayland.enable = true;
@@ -295,7 +260,7 @@ XMLEOF
   '';
   # U2F/YubiKey authentication - plug in key and touch to login/unlock
   security.pam.services.sudo.u2fAuth = true;
-  security.pam.services.gdm-password.u2fAuth = true;
+  security.pam.services.greetd.u2fAuth = true;
   security.pam.services.swaylock.u2fAuth = true;
   security.pam.u2f = {
     enable = true;
