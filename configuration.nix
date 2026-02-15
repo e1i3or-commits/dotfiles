@@ -24,6 +24,7 @@
     "amd_pstate=active"                                # Hardware-managed CPU frequency scaling for Zen 4
     "nowatchdog"                                       # Reduce unnecessary interrupts
     "nmi_watchdog=0"                                   # Disable NMI watchdog (not needed on desktop)
+    "pcie_aspm=off"                                    # Disable PCIe ASPM to fix GPU stutter
   ];
 
   # Tmpfs for /tmp - faster builds, less SSD wear
@@ -94,6 +95,9 @@
 
   # UPower (for Noctalia power status)
   services.upower.enable = true;
+
+  # Seat management (required for greetd + cage)
+  services.seatd.enable = true;
 
   # greetd + regreet (lightweight GTK4 Wayland greeter)
   services.xserver.enable = true;
@@ -206,6 +210,8 @@
   };
 
   # AMD GPU (RX 7900 XT) - uses open-source amdgpu driver + Mesa
+  # Load amdgpu early in initrd so dGPU outputs are available at boot (for greeter)
+  boot.initrd.kernelModules = [ "amdgpu" ];
   hardware.amdgpu.opencl.enable = true;
   hardware.graphics = {
     enable = true;

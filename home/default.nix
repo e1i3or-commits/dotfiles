@@ -200,6 +200,7 @@ in
     "fastfetch".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/fastfetch";
     "yazi".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/yazi";
     "alacritty".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/alacritty";
+    "btop".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/btop";
   };
 
   # ===========================================================================

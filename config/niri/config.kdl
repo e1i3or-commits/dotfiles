@@ -96,6 +96,9 @@ layout {
 spawn-at-startup "noctalia-shell"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 
+// Workaround: toggle DP-2 after startup to fix black screen from greetd handoff
+spawn-at-startup "sh" "-c" "sleep 2 && niri msg output DP-2 off && sleep 1 && niri msg output DP-2 on"
+
 // ============================================================================
 // XWAYLAND (for legacy X11 apps like Zoho WorkDrive)
 // ============================================================================
@@ -191,6 +194,8 @@ layer-rule {
 // Noctalia notifications
 debug {
     honor-xdg-activation-with-invalid-serial
+    render-drm-device "/dev/dri/renderD128"
+    disable-cursor-plane
 }
 
 // ============================================================================

@@ -1,0 +1,86 @@
+# Frost Peak theme for btop
+# Ice blue, violet, amber on dark mountain peaks
+
+# Main bg
+theme[main_bg]="#0c0e14"
+
+# Main text color
+theme[main_fg]="#e0e6f0"
+
+# Title color for boxes
+theme[title]="#e0e6f0"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="#38bdf8"
+
+# Background color of selected item in processes box
+theme[selected_bg]="#1e2030"
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="#38bdf8"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#4a5068"
+
+# Misc colors for processes box including mini cpu graphs, details memory graph and details status text
+theme[proc_misc]="#38bdf8"
+
+# Cpu box outline color
+theme[cpu_box]="#262a3a"
+
+# Memory/disks box outline color
+theme[mem_box]="#262a3a"
+
+# Net up/down box outline color
+theme[net_box]="#262a3a"
+
+# Processes box outline color
+theme[proc_box]="#262a3a"
+
+# Box divider line and small boxes line color
+theme[div_line]="#262a3a"
+
+# Temperature graph colors (ice blue → amber → red-warm)
+theme[temp_start]="#38bdf8"
+theme[temp_mid]="#f59e0b"
+theme[temp_end]="#ef4444"
+
+# CPU graph colors (ice blue → violet)
+theme[cpu_start]="#38bdf8"
+theme[cpu_mid]="#7c9ef7"
+theme[cpu_end]="#a78bfa"
+
+# Mem/Disk free meter (dim violet range)
+theme[free_start]="#2e1065"
+theme[free_mid]="#5b21b6"
+theme[free_end]="#7c3aed"
+
+# Mem/Disk cached meter (amber range)
+theme[cached_start]="#92400e"
+theme[cached_mid]="#d97706"
+theme[cached_end]="#f59e0b"
+
+# Mem/Disk available meter (violet range)
+theme[available_start]="#6d28d9"
+theme[available_mid]="#8b5cf6"
+theme[available_end]="#a78bfa"
+
+# Mem/Disk used meter (ice blue range)
+theme[used_start]="#0369a1"
+theme[used_mid]="#0ea5e9"
+theme[used_end]="#38bdf8"
+
+# Download graph colors (ice blue)
+theme[download_start]="#0c4a6e"
+theme[download_mid]="#0284c7"
+theme[download_end]="#38bdf8"
+
+# Upload graph colors (violet)
+theme[upload_start]="#4c1d95"
+theme[upload_mid]="#7c3aed"
+theme[upload_end]="#a78bfa"
+
+# Process box color gradient for threads, mem and cpu usage
+theme[process_start]="#38bdf8"
+theme[process_mid]="#a78bfa"
+theme[process_end]="#f59e0b"
