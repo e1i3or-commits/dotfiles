@@ -53,6 +53,7 @@ output "eDP-1" {
 
 layout {
     gaps 0
+    background-color "transparent"
 
     center-focused-column "never"
 
@@ -82,9 +83,9 @@ layout {
 // SPAWN AT STARTUP
 // ============================================================================
 
-spawn-at-startup "mako"
+// Noctalia Shell (replaces waybar, mako, fuzzel, swaylock, swayidle, swaybg)
+spawn-at-startup "noctalia-shell"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
-spawn-at-startup "swayidle" "-w"
 
 // ============================================================================
 // XWAYLAND (for legacy X11 apps like Zoho WorkDrive)
@@ -159,6 +160,24 @@ animations {
         duration-ms 80
         curve "ease-out-quad"
     }
+}
+
+// ============================================================================
+// NOCTALIA SHELL RULES
+// ============================================================================
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+layer-rule {
+    match namespace="^noctalia-wallpaper*"
+    place-within-backdrop true
+}
+
+debug {
+    honor-xdg-activation-with-invalid-serial
 }
 
 // ============================================================================
@@ -319,7 +338,7 @@ window-rule {
 
 binds {
     // Navigation
-    Mod+Space { spawn "fuzzel"; }
+    Mod+Space { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
     Mod+W { close-window; }
     Mod+F { fullscreen-window; }
     Mod+O { toggle-window-floating; }
@@ -405,7 +424,11 @@ binds {
     Mod+Ctrl+A { spawn "pavucontrol"; }
     Mod+Ctrl+B { spawn "blueman-manager"; }
     Mod+Ctrl+W { spawn "nm-connection-editor"; }
-    Mod+Ctrl+L { spawn "swaylock"; }
+    Mod+Ctrl+L { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+
+    // Noctalia panels
+    Mod+N { spawn "noctalia-shell" "ipc" "call" "notifications" "toggleHistory"; }
+    Mod+C { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
     Mod+Escape { quit; }
     Mod+Ctrl+R { spawn "niri" "msg" "action" "load-config-file"; }
 
@@ -413,7 +436,7 @@ binds {
     Mod+Shift+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; }
     Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && grim -g \"$(slurp)\" ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
     Mod+Print { spawn "sh" "-c" "grim ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
-    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | wofi --dmenu | cliphist decode | wl-copy"; }
+    Mod+Ctrl+V { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
 
     // Media
     XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }

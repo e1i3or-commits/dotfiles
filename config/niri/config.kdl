@@ -37,14 +37,14 @@ input {
 // ============================================================================
 
 // Samsung LC49G95T (49" super ultrawide) - Main display
-output "DP-2" {
+output "DP-3" {
     mode "5120x1440@119.999"
     scale 1.0
     position x=0 y=0
 }
 
 // Samsung LC34G55T (34" ultrawide) - Vertical, right of main
-output "DP-3" {
+output "DP-2" {
     mode "3440x1440@99.982"
     scale 1.25
     transform "90"
@@ -62,6 +62,7 @@ output "eDP-1" {
 
 layout {
     gaps 12
+    background-color "transparent"
 
     center-focused-column "never"
 
@@ -91,10 +92,9 @@ layout {
 // SPAWN AT STARTUP
 // ============================================================================
 
-spawn-at-startup "swaybg" "-i" "/home/kaika/Pictures/Wallpapers/aishot-769.jpg" "-m" "fill"
-spawn-at-startup "mako"
+// Noctalia Shell (replaces waybar, mako, fuzzel, swaylock, swayidle, swaybg)
+spawn-at-startup "noctalia-shell"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
-spawn-at-startup "swayidle" "-w"
 
 // ============================================================================
 // XWAYLAND (for legacy X11 apps like Zoho WorkDrive)
@@ -114,6 +114,7 @@ environment {
     XCURSOR_THEME "Bibata-Modern-Ice"
     XCURSOR_SIZE "24"
     DISPLAY ":0"  // For XWayland apps (Steam, etc.)
+    QS_ICON_THEME "Papirus-Dark"
 }
 
 // ============================================================================
@@ -169,6 +170,27 @@ animations {
         duration-ms 200
         curve "ease-out-cubic"
     }
+}
+
+// ============================================================================
+// NOCTALIA SHELL RULES
+// ============================================================================
+
+// Rounded corners for all windows (Noctalia requirement)
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+// Noctalia wallpaper layer
+layer-rule {
+    match namespace="^noctalia-wallpaper*"
+    place-within-backdrop true
+}
+
+// Noctalia notifications
+debug {
+    honor-xdg-activation-with-invalid-serial
 }
 
 // ============================================================================
@@ -332,7 +354,7 @@ binds {
     // NAVIGATION
     // ========================================================================
 
-    Mod+Space { spawn "fuzzel"; }
+    Mod+Space { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
     Mod+W { close-window; }
     Mod+F { fullscreen-window; }
     Mod+O { toggle-window-floating; }
@@ -440,7 +462,11 @@ binds {
     Mod+Ctrl+A { spawn "pavucontrol"; }
     Mod+Ctrl+B { spawn "blueman-manager"; }
     Mod+Ctrl+W { spawn "nm-connection-editor"; }
-    Mod+Ctrl+L { spawn "swaylock"; }
+    Mod+Ctrl+L { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+
+    // Noctalia panels
+    Mod+N { spawn "noctalia-shell" "ipc" "call" "notifications" "toggleHistory"; }
+    Mod+C { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
     Mod+Escape { quit; }
     Mod+Ctrl+R { spawn "niri" "msg" "action" "load-config-file"; }
 
@@ -451,7 +477,7 @@ binds {
     Mod+Shift+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; }
     Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && grim -g \"$(slurp)\" ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
     Mod+Print { spawn "sh" "-c" "grim ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
-    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+    Mod+Ctrl+V { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
 
     // ========================================================================
     // MEDIA KEYS

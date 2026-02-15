@@ -7,29 +7,28 @@
 }
 
 window#waybar {
-    background: rgba(12, 14, 20, 0.85);
-    border-radius: 12px;
-    border: 1px solid #262a3a;
+    background: transparent;
+    color: #e0e6f0;
 }
 
 window#waybar.hidden {
     opacity: 0.2;
 }
 
-/* All modules */
-#workspaces,
-#clock,
-#pulseaudio,
-#network,
-#battery,
-#tray,
-#custom-cava {
-    padding: 0 12px;
-    margin: 4px 4px;
-    color: #e0e6f0;
+/* ── Module containers ────────────────────────────────────────────── */
+
+.modules-left,
+.modules-center,
+.modules-right {
+    background: rgba(12, 14, 20, 0.75);
+    border: 1px solid #262a3a;
+    border-radius: 12px;
+    padding: 0 4px;
+    margin: 0 4px;
 }
 
-/* Workspaces */
+/* ── Workspaces ───────────────────────────────────────────────────── */
+
 #workspaces {
     background: transparent;
     padding: 0 4px;
@@ -52,73 +51,83 @@ window#waybar.hidden {
 
 #workspaces button.active {
     color: #38bdf8;
-    background: rgba(56, 189, 248, 0.2);
+    background: rgba(56, 189, 248, 0.15);
 }
 
 #workspaces button.urgent {
     color: #f87171;
 }
 
-/* Cava */
+/* ── Cava ─────────────────────────────────────────────────────────── */
+
 #custom-cava {
     color: #38bdf8;
     font-size: 14px;
     letter-spacing: 2px;
-    background: transparent;
+    padding: 0 8px;
+    min-width: 100px;
 }
 
-/* Clock */
+/* ── Clock ────────────────────────────────────────────────────────── */
+
 #clock {
     color: #e0e6f0;
-    background: #141620;
-    border-radius: 8px;
     padding: 0 16px;
+    font-weight: 600;
 }
 
-/* Pulseaudio */
+/* ── CPU (violet) ─────────────────────────────────────────────────── */
+
+#cpu {
+    color: #a78bfa;
+    padding: 0 10px;
+}
+
+/* ── Memory (amber) ───────────────────────────────────────────────── */
+
+#memory {
+    color: #f59e0b;
+    padding: 0 10px;
+}
+
+/* ── Temperature (emerald) ────────────────────────────────────────── */
+
+#temperature {
+    color: #34d399;
+    padding: 0 10px;
+}
+
+#temperature.critical {
+    color: #f87171;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Pulseaudio (pink) ────────────────────────────────────────────── */
+
 #pulseaudio {
     color: #f472b6;
+    padding: 0 10px;
 }
 
 #pulseaudio.muted {
     color: #3a3f52;
 }
 
-/* Network */
+/* ── Network (cyan) ───────────────────────────────────────────────── */
+
 #network {
     color: #22d3ee;
+    padding: 0 10px;
 }
 
 #network.disconnected {
     color: #f87171;
 }
 
-/* Battery */
-#battery {
-    color: #34d399;
-}
+/* ── Tray ─────────────────────────────────────────────────────────── */
 
-#battery.charging {
-    color: #38bdf8;
-}
-
-#battery.warning:not(.charging) {
-    color: #f59e0b;
-}
-
-#battery.critical:not(.charging) {
-    color: #f87171;
-    animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-/* Tray */
 #tray {
-    margin-right: 8px;
+    padding: 0 8px;
 }
 
 #tray > .passive {
@@ -130,9 +139,10 @@ window#waybar.hidden {
     color: #38bdf8;
 }
 
-/* Tooltip */
+/* ── Tooltip ──────────────────────────────────────────────────────── */
+
 tooltip {
-    background: rgba(6, 8, 12, 0.95);
+    background: rgba(12, 14, 20, 0.95);
     border: 1px solid #262a3a;
     border-radius: 10px;
 }
@@ -140,4 +150,12 @@ tooltip {
 tooltip label {
     color: #e0e6f0;
     padding: 8px;
+}
+
+/* ── Animations ───────────────────────────────────────────────────── */
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
 }

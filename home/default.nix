@@ -3,7 +3,7 @@
 # Programs here generate Nix-managed configs (kitty, starship, fish, etc.)
 # Dotfiles in config/ are symlinked directly via mkOutOfStoreSymlink (live-editable)
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 let
   # Absolute path to the nix-config repo (~/nix-config symlink)
@@ -11,10 +11,183 @@ let
   dotfilesPath = "/home/kaika/nix-config";
 in
 {
+  imports = [
+    inputs.noctalia.homeModules.default
+  ];
+
   home.stateVersion = "24.11";
   home.enableNixpkgsReleaseCheck = false;
 
   home.packages = with pkgs; [];
+
+  # ===========================================================================
+  # NOCTALIA SHELL - Frost Peak theme
+  # ===========================================================================
+
+  programs.noctalia-shell = {
+    enable = true;
+
+    settings = {
+      bar = {
+        position = "top";
+        monitors = ["DP-3"];
+        density = "compact";
+        showCapsule = true;
+        capsuleOpacity = 0.85;
+        backgroundOpacity = 0.7;
+        floating = true;
+        marginVertical = 4;
+        marginHorizontal = 6;
+        outerCorners = true;
+        exclusive = true;
+        widgets = {
+          left = [
+            {
+              id = "Launcher";
+              useDistroLogo = true;
+            }
+            {
+              id = "Workspace";
+              hideUnoccupied = true;
+              labelMode = "none";
+            }
+            {
+              id = "ActiveWindow";
+            }
+          ];
+          center = [
+            {
+              id = "MediaMini";
+            }
+          ];
+          right = [
+            {
+              id = "SystemMonitor";
+            }
+            {
+              id = "Tray";
+            }
+            {
+              id = "Volume";
+            }
+            {
+              id = "NotificationHistory";
+            }
+            {
+              id = "Clock";
+              formatHorizontal = "ddd MMM d  HH:mm";
+              useMonospacedFont = true;
+              usePrimaryColor = true;
+            }
+            {
+              id = "ControlCenter";
+            }
+          ];
+        };
+      };
+      general = {
+        animationSpeed = 1.5;
+        showScreenCorners = false;
+        forceBlackScreenCorners = true;
+        radiusRatio = 0.8;
+        enableShadows = true;
+        shadowDirection = "bottom_right";
+        lockOnSuspend = true;
+        showChangelogOnStartup = false;
+        telemetryEnabled = false;
+      };
+      ui = {
+        fontDefault = "JetBrainsMono Nerd Font";
+        fontFixed = "JetBrainsMono Nerd Font Mono";
+        tooltipsEnabled = true;
+        panelBackgroundOpacity = 0.85;
+        panelsAttachedToBar = true;
+        boxBorderEnabled = true;
+      };
+      colorSchemes = {
+        darkMode = true;
+      };
+      location = {
+        name = "Raleigh, NC";
+        weatherEnabled = true;
+        weatherShowEffects = false;
+        useFahrenheit = true;
+        use12hourFormat = true;
+        showCalendarEvents = true;
+        showCalendarWeather = true;
+        firstDayOfWeek = 0;
+      };
+      notifications = {
+        enabled = true;
+        monitors = ["DP-3"];
+      };
+      wallpaper = {
+        enabled = true;
+        directory = "/home/kaika/Pictures/Wallpapers";
+        setWallpaperOnAllMonitors = true;
+        fillMode = "crop";
+        fillColor = "#0c0e14";
+        randomEnabled = false;
+        transitionDuration = 1500;
+        transitionType = "random";
+        panelPosition = "follow_bar";
+      };
+      systemMonitor = {
+        enableDgpuMonitoring = true;
+        gpuPollingInterval = 2000;
+      };
+      dock = {
+        enable = false;
+      };
+      appLauncher = {
+        iconMode = "system";
+        sortByMostUsed = true;
+        terminalCommand = "kitty -e";
+      };
+      desktopWidgets = {
+        enable = false;
+      };
+    };
+
+    colors = {
+      mPrimary = "#38bdf8";
+      mOnPrimary = "#0c0e14";
+      mPrimaryContainer = "#1e3a5f";
+      mOnPrimaryContainer = "#e0e6f0";
+      mSecondary = "#a78bfa";
+      mOnSecondary = "#0c0e14";
+      mSecondaryContainer = "#2d2547";
+      mOnSecondaryContainer = "#e0e6f0";
+      mTertiary = "#f59e0b";
+      mOnTertiary = "#0c0e14";
+      mTertiaryContainer = "#5c3d0a";
+      mOnTertiaryContainer = "#e0e6f0";
+      mError = "#f87171";
+      mOnError = "#0c0e14";
+      mErrorContainer = "#5c1a1a";
+      mOnErrorContainer = "#fca5a5";
+      mBackground = "#0c0e14";
+      mOnBackground = "#e0e6f0";
+      mSurface = "#0c0e14";
+      mOnSurface = "#e0e6f0";
+      mSurfaceVariant = "#141620";
+      mOnSurfaceVariant = "#e0e6f0";
+      mOutline = "#262a3a";
+      mOutlineVariant = "#3a3f52";
+      mShadow = "#000000";
+      mScrim = "#000000";
+      mInverseSurface = "#e0e6f0";
+      mInverseOnSurface = "#0c0e14";
+      mInversePrimary = "#0e7490";
+      mSurfaceDim = "#0c0e14";
+      mSurfaceBright = "#1e2030";
+      mSurfaceContainerLowest = "#06080c";
+      mSurfaceContainerLow = "#0c0e14";
+      mSurfaceContainer = "#141620";
+      mSurfaceContainerHigh = "#1e2030";
+      mSurfaceContainerHighest = "#262a3a";
+    };
+  };
 
   # ===========================================================================
   # DOTFILES - Direct symlinks to repo (editable without rebuild)
@@ -22,11 +195,7 @@ in
 
   xdg.configFile = {
     "niri".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/niri";
-    "waybar".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/waybar";
-    "mako".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/mako";
-    "fuzzel".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/fuzzel";
-    "swaylock".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/swaylock";
-    "swayidle".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/swayidle";
+    # waybar, mako, fuzzel, swaylock, swayidle replaced by Noctalia Shell
     "cava".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/cava";
     "fastfetch".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/fastfetch";
     "yazi".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/config/yazi";
@@ -504,6 +673,7 @@ XFCONFXML
     VISUAL = "code";
     TERMINAL = "kitty";
     BROWSER = "firefox";
+    QS_ICON_THEME = "Papirus-Dark";
   };
 
   xdg.enable = true;

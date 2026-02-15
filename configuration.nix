@@ -133,8 +133,12 @@ XMLEOF
   # DMS disabled - not currently used
   # programs.dms-shell.enable = true;
 
-  # Waybar - stable status bar for Wayland
-  programs.waybar.enable = true;
+  # Bluetooth support (for Noctalia BT panel)
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+
+  # UPower (for Noctalia power status)
+  services.upower.enable = true;
 
   # Enable GDM (GNOME Display Manager) with Wayland
   services.xserver.enable = true;
@@ -169,7 +173,7 @@ XMLEOF
 
   environment.etc."gdm/wallpaper.jpg".source = ./gdm-theme/wallpaper.jpg;
 
-  # GDM monitor layout - main display on DP-2 (ultrawide), vertical on DP-3
+  # GDM monitor layout - main display on DP-3 (ultrawide), vertical on DP-2
   environment.etc."gdm/monitors.xml".text = ''
     <monitors version="2">
       <configuration>
@@ -180,7 +184,7 @@ XMLEOF
           <primary>yes</primary>
           <monitor>
             <monitorspec>
-              <connector>DP-2</connector>
+              <connector>DP-3</connector>
               <vendor>SAM</vendor>
               <product>LC49G95T</product>
               <serial>HCSW402682</serial>
@@ -195,14 +199,14 @@ XMLEOF
         <logicalmonitor>
           <x>5120</x>
           <y>0</y>
-          <scale>1</scale>
+          <scale>1.25</scale>
           <transform>
             <rotation>left</rotation>
             <flipped>no</flipped>
           </transform>
           <monitor>
             <monitorspec>
-              <connector>DP-3</connector>
+              <connector>DP-2</connector>
               <vendor>SAM</vendor>
               <product>LC34G55T</product>
               <serial>H4ZRA01202</serial>
@@ -237,13 +241,20 @@ XMLEOF
   };
 
   # AMD GPU (RX 7900 XT) - uses open-source amdgpu driver + Mesa
-  hardware.graphics.enable = true;
+  hardware.amdgpu.opencl.enable = true;
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      libva              # VA-API runtime (hardware video decode)
+    ];
+  };
 
   # Environment variables for Wayland
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";      # Wayland with fallback for incompatible apps
     MOZ_ENABLE_WAYLAND = "1";                    # Firefox native Wayland
+    LIBVA_DRIVER_NAME = "radeonsi";              # AMD VA-API driver for hardware video decode
     # GSettings schemas for GTK/Tauri apps (Maestro, etc.) - merged into one directory
     GSETTINGS_SCHEMA_DIR = let
       schemaDir = pkgs.runCommand "merged-gsettings-schemas" {
@@ -333,7 +344,7 @@ XMLEOF
     zip
     tree
     htop
-    btop
+    (btop.override { rocmSupport = true; })
     file
     which
 
@@ -408,17 +419,13 @@ XMLEOF
     fontconfig
     restic              # Backup tool for home directory
 
-    # Wayland tools
-    fuzzel              # Fast Wayland launcher
-    waybar
+    # Wayland tools (fuzzel, waybar, swaylock, swayidle, mako, swaybg replaced by Noctalia Shell)
     wl-clipboard-x11
-    swaylock
-    swayidle            # Idle management (auto-lock, suspend)
-    mako
     libnotify
     xwayland-satellite  # XWayland for legacy X11 apps (Zoho WorkDrive, etc.)
     wlsunset            # Blue light filter for Wayland
-    swaybg              # Wallpaper tool for Wayland
+    brightnessctl       # Monitor brightness (Noctalia dependency)
+    imagemagick         # Image processing (Noctalia dependency)
     hyprpicker          # Wayland color picker
 
     # TUI Tools (Midnight Ember rice)
@@ -445,6 +452,12 @@ XMLEOF
 
     # System monitoring
     lm_sensors
+    radeontop           # Real-time AMD GPU monitoring (utilization, VRAM, clocks)
+    libva-utils         # vainfo - verify VA-API hardware video decode
+    pciutils            # lspci - PCI device listing
+
+    # Icon theme (system-wide for Noctalia/Quickshell)
+    papirus-icon-theme
 
     # Network tools
     nmap
