@@ -105,7 +105,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.cage}/bin/cage -s -m last -- ${pkgs.greetd.regreet}/bin/regreet";
+        command = "${pkgs.cage}/bin/cage -s -m last -- ${pkgs.regreet}/bin/regreet";
         user = "greeter";
       };
     };
@@ -346,6 +346,7 @@
     python3
     python3Packages.pip
     lazygit
+    codex       # OpenAI Codex CLI coding agent
 
     # Terminal
     kitty

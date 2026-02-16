@@ -432,6 +432,7 @@ binds {
     Mod+Shift+O { spawn "obsidian"; }
     Mod+Shift+Slash { spawn "bitwarden-desktop"; }
     Mod+Shift+D { spawn "kitty" "lazygit"; }
+    Mod+Shift+U { spawn "firefox" "-P"; }
     Mod+Ctrl+T { spawn "kitty" "btop"; }
 
     // ========================================================================
