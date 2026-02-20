@@ -46,7 +46,7 @@ output "DP-3" {
 // Samsung LC34G55T (34" ultrawide) - Vertical, right of main
 output "DP-2" {
     mode "3440x1440@99.982"
-    scale 1.25
+    scale 1.0
     transform "90"
     position x=5120 y=0
 }
@@ -93,7 +93,7 @@ layout {
 // ============================================================================
 
 // Noctalia Shell (replaces waybar, mako, fuzzel, swaylock, swayidle, swaybg)
-spawn-at-startup "noctalia-shell"
+spawn-at-startup "sh" "-c" "sleep 2 && noctalia-shell"
 spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
 
 // Workaround: toggle DP-2 after startup to fix black screen from greetd handoff

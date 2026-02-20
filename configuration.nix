@@ -347,6 +347,8 @@
     python3Packages.pip
     lazygit
     codex       # OpenAI Codex CLI coding agent
+    go
+    gcc
 
     # Terminal
     kitty

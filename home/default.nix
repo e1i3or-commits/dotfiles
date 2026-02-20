@@ -57,10 +57,16 @@ in
           ];
           center = [
             {
-              id = "MediaMini";
+              id = "Clock";
+              formatHorizontal = "ddd MMM d  h:mm a";
+              useMonospacedFont = true;
+              usePrimaryColor = true;
             }
           ];
           right = [
+            {
+              id = "MediaMini";
+            }
             {
               id = "SystemMonitor";
             }
@@ -72,12 +78,6 @@ in
             }
             {
               id = "NotificationHistory";
-            }
-            {
-              id = "Clock";
-              formatHorizontal = "ddd MMM d  HH:mm";
-              useMonospacedFont = true;
-              usePrimaryColor = true;
             }
             {
               id = "ControlCenter";
@@ -358,6 +358,82 @@ XFCONFXML
   # CLI TOOLS
   # ===========================================================================
 
+  programs.neovim = {
+    enable = true;
+    defaultEditor = false;
+    viAlias = true;
+    vimAlias = true;
+    extraLuaConfig = ''
+      -- Options
+      vim.opt.number = true
+      vim.opt.relativenumber = true
+      vim.opt.mouse = "a"
+      vim.opt.clipboard = "unnamedplus"
+      vim.opt.ignorecase = true
+      vim.opt.smartcase = true
+      vim.opt.expandtab = true
+      vim.opt.shiftwidth = 2
+      vim.opt.tabstop = 2
+      vim.opt.termguicolors = true
+      vim.opt.scrolloff = 8
+      vim.opt.signcolumn = "yes"
+      vim.opt.cursorline = true
+      vim.opt.showmode = false
+      vim.opt.splitbelow = true
+      vim.opt.splitright = true
+      vim.opt.undofile = true
+      vim.opt.updatetime = 250
+      vim.opt.wrap = false
+
+      -- Frost Peak colorscheme
+      vim.cmd("highlight Normal guibg=#0c0e14 guifg=#e0e6f0")
+      vim.cmd("highlight NormalFloat guibg=#141620 guifg=#e0e6f0")
+      vim.cmd("highlight FloatBorder guibg=#141620 guifg=#262a3a")
+      vim.cmd("highlight CursorLine guibg=#141620")
+      vim.cmd("highlight CursorLineNr guifg=#38bdf8 gui=bold")
+      vim.cmd("highlight LineNr guifg=#3a3f52")
+      vim.cmd("highlight Visual guibg=#1e3a5f")
+      vim.cmd("highlight Search guibg=#1e3a5f guifg=#38bdf8")
+      vim.cmd("highlight IncSearch guibg=#38bdf8 guifg=#0c0e14")
+      vim.cmd("highlight Pmenu guibg=#141620 guifg=#e0e6f0")
+      vim.cmd("highlight PmenuSel guibg=#1e3a5f guifg=#38bdf8")
+      vim.cmd("highlight StatusLine guibg=#141620 guifg=#e0e6f0")
+      vim.cmd("highlight StatusLineNC guibg=#0c0e14 guifg=#3a3f52")
+      vim.cmd("highlight VertSplit guifg=#262a3a guibg=NONE")
+      vim.cmd("highlight SignColumn guibg=#0c0e14")
+      vim.cmd("highlight Comment guifg=#3a3f52 gui=italic")
+      vim.cmd("highlight String guifg=#34d399")
+      vim.cmd("highlight Keyword guifg=#a78bfa gui=bold")
+      vim.cmd("highlight Function guifg=#38bdf8")
+      vim.cmd("highlight Type guifg=#22d3ee")
+      vim.cmd("highlight Constant guifg=#f59e0b")
+      vim.cmd("highlight Number guifg=#f59e0b")
+      vim.cmd("highlight Boolean guifg=#f59e0b")
+      vim.cmd("highlight Operator guifg=#22d3ee")
+      vim.cmd("highlight Identifier guifg=#e0e6f0")
+      vim.cmd("highlight Statement guifg=#a78bfa gui=bold")
+      vim.cmd("highlight PreProc guifg=#38bdf8")
+      vim.cmd("highlight Special guifg=#f59e0b")
+      vim.cmd("highlight Error guifg=#f87171 guibg=NONE")
+      vim.cmd("highlight WarningMsg guifg=#f59e0b")
+      vim.cmd("highlight DiagnosticError guifg=#f87171")
+      vim.cmd("highlight DiagnosticWarn guifg=#f59e0b")
+      vim.cmd("highlight DiagnosticInfo guifg=#38bdf8")
+      vim.cmd("highlight DiagnosticHint guifg=#22d3ee")
+      vim.cmd("highlight MatchParen guibg=#262a3a guifg=#38bdf8 gui=bold")
+      vim.cmd("highlight TabLine guibg=#141620 guifg=#3a3f52")
+      vim.cmd("highlight TabLineSel guibg=#1e3a5f guifg=#38bdf8 gui=bold")
+      vim.cmd("highlight TabLineFill guibg=#0c0e14")
+      vim.cmd("highlight Title guifg=#38bdf8 gui=bold")
+      vim.cmd("highlight Directory guifg=#38bdf8")
+      vim.cmd("highlight NonText guifg=#262a3a")
+      vim.cmd("highlight EndOfBuffer guifg=#0c0e14")
+
+      -- Statusline
+      vim.opt.statusline = " %f %m%r %= %y  %l:%c  %p%% "
+    '';
+  };
+
   programs.bat = {
     enable = true;
     config = { theme = "TwoDark"; paging = "auto"; };
@@ -371,6 +447,55 @@ XFCONFXML
   programs.fzf = {
     enable = true;
     enableFishIntegration = true;
+  };
+
+  programs.tmux = {
+    enable = true;
+    terminal = "tmux-256color";
+    mouse = true;
+    baseIndex = 1;
+    escapeTime = 0;
+    historyLimit = 10000;
+    keyMode = "vi";
+    prefix = "C-a";
+    plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = resurrect;
+        extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+      }
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '10'
+        '';
+      }
+    ];
+    extraConfig = ''
+      # Frost Peak status bar
+      set -g status-style "bg=#141620,fg=#e0e6f0"
+      set -g status-left "#[bg=#38bdf8,fg=#0c0e14,bold] #S #[default] "
+      set -g status-right "#[fg=#a78bfa]%H:%M #[fg=#3a3f52]| #[fg=#38bdf8]%b %d"
+      set -g window-status-current-style "bg=#1e3a5f,fg=#38bdf8,bold"
+      set -g window-status-style "fg=#3a3f52"
+      set -g pane-border-style "fg=#262a3a"
+      set -g pane-active-border-style "fg=#38bdf8"
+      set -g message-style "bg=#141620,fg=#38bdf8"
+
+      # True color support
+      set -ag terminal-overrides ",xterm-256color:RGB"
+
+      # Split panes with | and -
+      bind | split-window -h -c "#{pane_current_path}"
+      bind - split-window -v -c "#{pane_current_path}"
+      bind c new-window -c "#{pane_current_path}"
+
+      # Vi-style pane navigation
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      bind l select-pane -R
+    '';
   };
 
   # ===========================================================================
