@@ -1,0 +1,284 @@
+/* ==========================================================
+   Frost Peak Theme for Thunderbird
+   Primary: #38bdf8 (ice blue)  Secondary: #a78bfa (violet)
+   Warm: #f59e0b (amber)  BG: #0c0e14  Surface: #141620
+   Border: #262a3a  Text: #e0e6f0
+   ========================================================== */
+
+/* --- Global custom properties --- */
+:root {
+  /* Core backgrounds */
+  --lwt-accent-color: #0c0e14 !important;
+  --lwt-text-color: #e0e6f0 !important;
+  --toolbar-bgcolor: #06080c !important;
+  --toolbar-color: #e0e6f0 !important;
+  --sidebar-background-color: #06080c !important;
+  --sidebar-text-color: #e0e6f0 !important;
+  --sidebar-highlight-background-color: rgba(56, 189, 248, 0.25) !important;
+  --sidebar-highlight-text-color: #e0e6f0 !important;
+
+  /* Layout system */
+  --layout-background-0: #0c0e14 !important;
+  --layout-background-1: #06080c !important;
+  --layout-background-2: #141620 !important;
+  --layout-background-3: #1a1d2e !important;
+  --layout-border-0: #262a3a !important;
+  --layout-border-1: #262a3a !important;
+  --layout-color-0: #e0e6f0 !important;
+  --layout-color-1: #b0b8c8 !important;
+  --layout-color-2: #3a3f52 !important;
+
+  /* Accent / selection */
+  --selected-item-color: #38bdf8 !important;
+  --selected-item-text-color: #06080c !important;
+  --in-content-accent-color: #38bdf8 !important;
+  --in-content-accent-color-active: #2196d4 !important;
+  --focus-outline-color: #38bdf8 !important;
+  --color-blue-50: #38bdf8 !important;
+  --color-blue-60: #38bdf8 !important;
+  --color-blue-70: #2196d4 !important;
+
+  /* Buttons */
+  --button-primary-bgcolor: #38bdf8 !important;
+  --button-primary-hover-bgcolor: #7dd3fc !important;
+  --button-primary-active-bgcolor: #2196d4 !important;
+  --button-primary-color: #06080c !important;
+
+  /* Tabs */
+  --tab-selected-bgcolor: #0c0e14 !important;
+  --tab-selected-color: #e0e6f0 !important;
+  --tabline-color: #38bdf8 !important;
+
+  /* Panels / popovers */
+  --panel-background: #141620 !important;
+  --panel-color: #e0e6f0 !important;
+  --panel-border-color: #262a3a !important;
+  --arrowpanel-background: #141620 !important;
+  --arrowpanel-color: #e0e6f0 !important;
+  --arrowpanel-border-color: #262a3a !important;
+}
+
+/* --- Toolbars --- */
+#toolbar-menubar,
+#tabs-toolbar,
+#mail-toolbar-menubar2,
+#unified-toolbar,
+.toolbar,
+toolbar {
+  background-color: #06080c !important;
+  color: #e0e6f0 !important;
+}
+
+/* Unified toolbar container */
+#unifiedToolbarContainer {
+  background-color: #06080c !important;
+  border-bottom: 1px solid #262a3a !important;
+}
+
+/* --- Tab bar --- */
+#tabmail-tabs .tabmail-tab {
+  background-color: transparent !important;
+  color: #b0b8c8 !important;
+}
+
+#tabmail-tabs .tabmail-tab[selected="true"] {
+  background-color: #0c0e14 !important;
+  color: #e0e6f0 !important;
+}
+
+#tabmail-tabs .tabmail-tab[selected="true"] .tab-line {
+  background-color: #38bdf8 !important;
+}
+
+/* --- Folder pane (left sidebar) --- */
+#folderPane,
+#folderTree {
+  background-color: #06080c !important;
+  color: #e0e6f0 !important;
+}
+
+#folderTree treechildren {
+  background-color: #06080c !important;
+}
+
+/* Folder pane header */
+#folderPaneHeaderBar {
+  background-color: #06080c !important;
+  border-bottom: 1px solid #262a3a !important;
+}
+
+/* --- Thread pane (message list) --- */
+#threadTree,
+#threadPane {
+  background-color: #0c0e14 !important;
+  color: #e0e6f0 !important;
+}
+
+#threadTree treechildren {
+  background-color: #0c0e14 !important;
+}
+
+/* Quick filter bar */
+#quick-filter-bar {
+  background-color: #06080c !important;
+  border-bottom: 1px solid #262a3a !important;
+}
+
+/* --- Message header --- */
+.message-header-container,
+#messageHeader {
+  background-color: #141620 !important;
+  color: #e0e6f0 !important;
+}
+
+/* --- Status bar --- */
+#status-bar,
+.statusbar {
+  background-color: #06080c !important;
+  color: #b0b8c8 !important;
+  border-top: 1px solid #262a3a !important;
+}
+
+/* --- Tree view rows --- */
+treechildren::-moz-tree-row {
+  border-color: transparent !important;
+}
+
+treechildren::-moz-tree-row(hover) {
+  background-color: rgba(56, 189, 248, 0.08) !important;
+}
+
+treechildren::-moz-tree-row(selected) {
+  background-color: rgba(56, 189, 248, 0.25) !important;
+}
+
+treechildren::-moz-tree-row(selected, focus) {
+  background-color: rgba(56, 189, 248, 0.35) !important;
+}
+
+treechildren::-moz-tree-cell-text {
+  color: #e0e6f0 !important;
+}
+
+treechildren::-moz-tree-cell-text(selected) {
+  color: #e0e6f0 !important;
+}
+
+/* Unread messages - ice blue accent */
+treechildren::-moz-tree-cell-text(unread) {
+  font-weight: bold !important;
+  color: #38bdf8 !important;
+}
+
+/* Flagged/starred messages - amber */
+treechildren::-moz-tree-image(flaggedCol, flagged) {
+  fill: #f59e0b !important;
+}
+
+/* --- Tag colors (Frost Peak palette) --- */
+treechildren::-moz-tree-cell-text(tagged, $label1) {
+  color: #f87171 !important; /* Important - red */
+}
+
+treechildren::-moz-tree-cell-text(tagged, $label2) {
+  color: #f59e0b !important; /* Work - amber */
+}
+
+treechildren::-moz-tree-cell-text(tagged, $label3) {
+  color: #34d399 !important; /* Personal - green */
+}
+
+treechildren::-moz-tree-cell-text(tagged, $label4) {
+  color: #22d3ee !important; /* To Do - cyan */
+}
+
+treechildren::-moz-tree-cell-text(tagged, $label5) {
+  color: #a78bfa !important; /* Later - violet */
+}
+
+/* --- Context menus / popups --- */
+menupopup,
+panel {
+  background-color: #141620 !important;
+  color: #e0e6f0 !important;
+  border: 1px solid #262a3a !important;
+}
+
+menuitem:hover,
+menu:hover,
+menuitem[_moz-menuactive="true"],
+menu[_moz-menuactive="true"] {
+  background-color: rgba(56, 189, 248, 0.2) !important;
+  color: #e0e6f0 !important;
+}
+
+menuseparator {
+  border-color: #262a3a !important;
+}
+
+/* --- Splitters / dividers --- */
+splitter {
+  background-color: #262a3a !important;
+  border: none !important;
+  width: 1px !important;
+}
+
+/* --- Scrollbars --- */
+scrollbar thumb {
+  background-color: #3a3f52 !important;
+  border-radius: 4px !important;
+}
+
+scrollbar thumb:hover {
+  background-color: #38bdf8 !important;
+}
+
+/* --- Compose window --- */
+#msgcomposeWindow,
+#MsgHeadersToolbar,
+#composeToolbar2 {
+  background-color: #06080c !important;
+  color: #e0e6f0 !important;
+}
+
+#messageArea {
+  background-color: #0c0e14 !important;
+}
+
+/* Address fields in compose */
+#addressingWidget {
+  background-color: #0c0e14 !important;
+}
+
+/* --- Search / filter inputs --- */
+input,
+textbox,
+search-textbox {
+  background-color: #141620 !important;
+  color: #e0e6f0 !important;
+  border-color: #262a3a !important;
+}
+
+input:focus,
+textbox:focus,
+search-textbox:focus {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3) !important;
+}
+
+/* --- Calendar (if used) --- */
+#calendarTabPanel {
+  background-color: #0c0e14 !important;
+}
+
+/* --- Notification bars --- */
+.notificationbox-stack notification-message {
+  background-color: #141620 !important;
+  color: #e0e6f0 !important;
+  border-bottom: 1px solid #262a3a !important;
+}
+
+/* --- Account central / start page --- */
+#accountCentralBox {
+  background-color: #0c0e14 !important;
+}
