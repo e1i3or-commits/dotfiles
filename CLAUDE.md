@@ -24,6 +24,10 @@ nix flake update ~/nix-config
 sudo nixos-rebuild switch --rollback
 ```
 
+**Important:** Always commit changes before running `nrs` — the flake system warns "Git tree is dirty" on uncommitted changes.
+
+**Git email:** Use the GitHub noreply email (configured in repo): `246305258+e1i3or-commits@users.noreply.github.com`. GitHub blocks pushes with private emails.
+
 ## What Needs Rebuild vs What's Live
 
 **Requires `nrs`:** `configuration.nix`, `home/default.nix`, `flake.nix`
@@ -35,6 +39,8 @@ sudo nixos-rebuild switch --rollback
 - `thunderbird/` CSS files
 
 The symlink chain: `~/.config/app` → nix store → `mkOutOfStoreSymlink` → `~/nix-config/config/app` (actual files here).
+
+**When adding new scripts to `local/bin/`:** You must also add a symlink entry in `home/default.nix` under `home.file` using `mkOutOfStoreSymlink`, then rebuild. Without this, the script won't appear in `~/.local/bin/`.
 
 ## Architecture
 
@@ -58,6 +64,7 @@ Nix Config/
 - **dGPU:** AMD RX 7900 XT (Navi 31 = `renderD128` = `card1`)
 - **Display 1:** Samsung LC49G95T 5120x1440@120Hz (DP-3, main ultrawide)
 - **Display 2:** Samsung LC34G55T 3440x1440@100Hz (DP-2, rotated 90°)
+- **Mouse:** Logitech MX Master 2S via Unifying Receiver (USB `046d:c52b`)
 
 Niri is forced to render on the dGPU via `render-drm-device "/dev/dri/renderD128"` in the debug section of `config/niri/config.kdl`. If this is wrong, you get mouse lag / input latency from cross-GPU frame copying.
 
@@ -69,11 +76,32 @@ cat /sys/class/drm/card*/device/uevent    # PCI IDs
 
 ## Known Recurring Issues
 
-**Mouse lag:** Usually caused by Niri rendering on the iGPU instead of the dGPU. Verify `render-drm-device` points to the RX 7900's renderD device. Can also be caused by `disable-cursor-plane` (forces software cursor — remove unless needed). Check `journalctl -f | grep libinput` for lag warnings.
+**Mouse lag:** Multiple possible causes, check in order:
+1. **Wrong render device:** Verify `render-drm-device` in niri debug section points to the RX 7900's renderD device (currently `renderD128`). Cross-GPU frame copying causes input latency.
+2. **`disable-cursor-plane`:** Do NOT use on AMD — forces software cursor through compositor. Only needed for NVIDIA.
+3. **Logitech HID++ errors:** Check `journalctl -k -b | grep hidpp`. If receiver lost permissions, run `sudo udevadm trigger --action=add /dev/hidraw0 /dev/hidraw1`. Solaar manages device settings.
+4. **PCIe ASPM:** Must stay disabled (`pcie_aspm=off` in kernel params). Re-enabling causes GPU stutter.
+5. **libinput lag:** Check `journalctl -f | grep libinput` for "event processing lagging" warnings — indicates compositor starvation (usually from Quickshell process floods).
 
 **DP-2 black screen on boot:** Workaround in niri config: `spawn-at-startup "sh" "-c" "sleep 2 && niri msg output DP-2 off && sleep 1 && niri msg output DP-2 on"`
 
 **Process floods from Quickshell/Noctalia:** Can spawn excessive shell processes and starve the compositor. Check with `ps aux | grep quickshell`.
+
+**Solaar not detecting devices:** hidraw permissions issue. After plugging receiver into a new USB port, run `sudo udevadm trigger --action=add /dev/hidraw0 /dev/hidraw1` to re-apply udev rules.
+
+## Wayland Clipboard Limitations
+
+`wl-copy` can only serve **one MIME type** at a time. The `screenshot` script (`local/bin/screenshot`) works around this with two modes:
+- `screenshot` / `screenshot --image` — copies as `image/png` (for pasting into apps)
+- `screenshot --file` — copies as `x-special/gnome-copied-files` (for pasting as file in Thunar)
+
+Keybinds: `Mod+Shift+S` (image mode), `Mod+Ctrl+S` (file mode). Both save to `~/Pictures/Screenshots/`.
+
+PyGObject/GTK clipboard from scripts does NOT work on Wayland without a focused surface — don't attempt the multi-MIME-type approach via Python GTK.
+
+## NixOS Python Packaging
+
+On NixOS, `python3Packages.foo` as a standalone system package does NOT make it importable. Use `python3.withPackages (ps: [ ps.foo ])` instead. GI typelibs also require packages like `gtk3`, `gobject-introspection`, `pango` etc. to be in the environment — the simplest approach for scripts is a `nix-shell` shebang.
 
 ## Theme: Frost Peak
 
@@ -94,3 +122,4 @@ cat /sys/class/drm/card*/device/uevent    # PCI IDs
 - Noctalia Shell replaces waybar/mako/fuzzel/swaylock/swayidle/swaybg
 - XWayland via `xwayland-satellite` for legacy X11 apps (Zoho WorkDrive)
 - YubiKey U2F configured for sudo/greetd/swaylock (mode: "sufficient")
+- Logitech MX Master 2S managed via Solaar (udev rules in `configuration.nix`)
