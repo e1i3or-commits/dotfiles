@@ -270,11 +270,13 @@
   security.rtkit.enable = true;
 
   # YubiKey support
-  services.udev.packages = [ pkgs.yubikey-personalization ];
+  services.udev.packages = [ pkgs.yubikey-personalization pkgs.solaar ];
   services.pcscd.enable = true;
 
   # Stream Deck - disable USB autosuspend to prevent disconnects
   services.udev.extraRules = ''
+    # Logitech Unifying Receiver - disable autosuspend, max polling
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c52b", ATTR{power/autosuspend}="-1", ATTR{power/control}="on"
     # Elgato Stream Deck MK.2 - disable autosuspend
     ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0fd9", ATTR{idProduct}=="0080", ATTR{power/autosuspend}="-1", ATTR{power/control}="on"
     # Elgato Stream Deck (all models)
@@ -354,6 +356,10 @@
     yubikey-manager
     yubikey-personalization
     pam_u2f
+
+    # Peripherals
+    solaar          # Logitech device manager (MX Master 2S config, polling, power)
+    usbutils        # lsusb for USB debugging
 
     # Development tools
     vscode

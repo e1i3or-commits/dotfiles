@@ -364,7 +364,7 @@ XFCONFXML
     defaultEditor = false;
     viAlias = true;
     vimAlias = true;
-    extraLuaConfig = ''
+    initLua = ''
       -- Options
       vim.opt.number = true
       vim.opt.relativenumber = true
