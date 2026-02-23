@@ -195,7 +195,6 @@ layer-rule {
 debug {
     honor-xdg-activation-with-invalid-serial
     render-drm-device "/dev/dri/renderD128"
-    disable-cursor-plane
 }
 
 // ============================================================================
