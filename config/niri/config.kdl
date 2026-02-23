@@ -479,9 +479,10 @@ binds {
     // SCREENSHOTS & CLIPBOARD
     // ========================================================================
 
-    Mod+Shift+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; }
-    Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && grim -g \"$(slurp)\" ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
-    Mod+Print { spawn "sh" "-c" "grim ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
+    Mod+Shift+S { spawn "screenshot"; }
+    Mod+Ctrl+S { spawn "screenshot" "--file"; }
+    Print { spawn "screenshot"; }
+    Mod+Print { spawn "screenshot" "full"; }
     Mod+Ctrl+V { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
 
     // ========================================================================

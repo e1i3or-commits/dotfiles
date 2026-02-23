@@ -33,6 +33,22 @@
     tmpfsSize = "50%";  # Up to 50% of RAM (16GB with your 32GB)
   };
 
+  # CPU frequency scaling - powersave governor unlocks EPP control with amd-pstate-epp
+  # (amd-pstate-epp only supports "performance" and "powersave" governors)
+  # "powersave" still allows full boost — EPP controls how aggressively it boosts
+  powerManagement.cpuFreqGovernor = "powersave";
+
+  # Set AMD P-State EPP to balance_performance (governor must not be "performance" for this to work)
+  systemd.services.amd-pstate-epp = {
+    description = "Set AMD P-State EPP to balance_performance";
+    after = [ "multi-user.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'for f in /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference; do echo balance_performance > \"$f\"; done'";
+    };
+  };
+
   # Backup drive mount point (manual unlock required)
   # To use: sudo cryptsetup open /dev/nvme1n1p1 backup-drive && sudo mount /dev/mapper/backup-drive /mnt/backup
   fileSystems."/mnt/backup" = {

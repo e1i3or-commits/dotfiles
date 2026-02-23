@@ -216,6 +216,7 @@ in
     ".local/bin/webapp-list".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/local/bin/webapp-list";
     ".local/bin/backup".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/local/bin/backup";
     ".local/bin/zoho-workdrive".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/local/bin/zoho-workdrive";
+    ".local/bin/screenshot".source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/local/bin/screenshot";
 
     # Thunderbird Frost Peak CSS
     ".thunderbird/frost-peak/chrome/userChrome.css".source =
@@ -459,9 +460,20 @@ XFCONFXML
     keyMode = "vi";
     prefix = "C-a";
     plugins = with pkgs.tmuxPlugins; [
+      # --- Essentials ---
+      sensible              # Sane defaults (UTF-8, history, focus events)
+      yank                  # System clipboard yank in copy mode (y to copy)
+      open                  # Open URLs/files from copy mode (o to open, C-o in editor)
+      pain-control          # Better pane bindings (P+H/J/K/L resize, P+|/- split)
+      copycat               # Regex search in scrollback (P+C-f files, P+C-u URLs, P+C-d digits)
+
+      # --- Session Persistence ---
       {
         plugin = resurrect;
-        extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+        extraConfig = ''
+          set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-capture-pane-contents 'on'
+        '';
       }
       {
         plugin = continuum;
@@ -470,20 +482,87 @@ XFCONFXML
           set -g @continuum-save-interval '10'
         '';
       }
+
+      # --- Navigation & Search ---
+      {
+        plugin = fingers;    # Quick-copy any path, hash, URL, IP (P+F to activate)
+        extraConfig = ''
+          set -g @fingers-key F
+          set -g @fingers-highlight-style "fg=#0c0e14,bg=#38bdf8"
+          set -g @fingers-hint-style "fg=#0c0e14,bg=#f59e0b,bold"
+        '';
+      }
+      {
+        plugin = extrakto;   # Fuzzy find & insert text from scrollback (P+Tab)
+        extraConfig = ''
+          set -g @extrakto_key "Tab"
+          set -g @extrakto_split_size "12"
+          set -g @extrakto_clip_tool "wl-copy"
+        '';
+      }
+      {
+        plugin = tmux-fzf;   # Fuzzy find sessions/windows/panes/commands (P+F5)
+        extraConfig = ''
+          TMUX_FZF_LAUNCH_KEY="C-f"
+        '';
+      }
+      {
+        plugin = fuzzback;   # Fuzzy search scrollback history (P+?)
+        extraConfig = ''
+          set -g @fuzzback-bind "?"
+        '';
+      }
+
+      # --- Visual Feedback ---
+      {
+        plugin = prefix-highlight;  # Shows when prefix is active in status bar
+        extraConfig = ''
+          set -g @prefix_highlight_fg '#0c0e14'
+          set -g @prefix_highlight_bg '#f59e0b'
+          set -g @prefix_highlight_show_copy_mode 'on'
+          set -g @prefix_highlight_copy_mode_attr 'fg=#0c0e14,bg=#a78bfa'
+          set -g @prefix_highlight_show_sync_mode 'on'
+          set -g @prefix_highlight_sync_mode_attr 'fg=#0c0e14,bg=#f87171'
+        '';
+      }
+      {
+        plugin = mode-indicator;    # Shows current mode (normal/prefix/copy/sync)
+        extraConfig = ''
+          set -g @mode_indicator_empty_prompt  " NORMAL "
+          set -g @mode_indicator_empty_mode_style "fg=#0c0e14,bg=#38bdf8,bold"
+          set -g @mode_indicator_prefix_prompt " PREFIX "
+          set -g @mode_indicator_prefix_mode_style "fg=#0c0e14,bg=#f59e0b,bold"
+          set -g @mode_indicator_copy_prompt  " COPY "
+          set -g @mode_indicator_copy_mode_style "fg=#0c0e14,bg=#a78bfa,bold"
+          set -g @mode_indicator_sync_prompt  " SYNC "
+          set -g @mode_indicator_sync_mode_style "fg=#0c0e14,bg=#f87171,bold"
+        '';
+      }
+
+      # --- Dev Workflow ---
+      logging               # P+Shift+P to toggle pane logging, P+Alt+p to save scrollback
+      sessionist            # Better session management (P+g list, P+C create, P+X kill, P+S switch)
+      tmux-thumbs           # Alternate quick-copy with hints (P+Space)
     ];
     extraConfig = ''
       # Frost Peak status bar
       set -g status-style "bg=#141620,fg=#e0e6f0"
-      set -g status-left "#[bg=#38bdf8,fg=#0c0e14,bold] #S #[default] "
-      set -g status-right "#[fg=#a78bfa]%H:%M #[fg=#3a3f52]| #[fg=#38bdf8]%b %d"
-      set -g window-status-current-style "bg=#1e3a5f,fg=#38bdf8,bold"
-      set -g window-status-style "fg=#3a3f52"
+      set -g status-left "#{tmux_mode_indicator} #[bg=#38bdf8,fg=#0c0e14,bold] #S #[default] "
+      set -g status-left-length 40
+      set -g status-right "#{prefix_highlight} #[fg=#3a3f52]#{continuum_status}m #[fg=#a78bfa]%H:%M #[fg=#3a3f52]| #[fg=#38bdf8]%b %d"
+      set -g status-right-length 60
+      set -g window-status-current-format " #[fg=#38bdf8,bold]#I:#W#{?window_zoomed_flag, 󰊓,} "
+      set -g window-status-format " #[fg=#3a3f52]#I:#W "
+      set -g window-status-current-style "bg=#1e3a5f"
+      set -g window-status-style "bg=default"
       set -g pane-border-style "fg=#262a3a"
       set -g pane-active-border-style "fg=#38bdf8"
       set -g message-style "bg=#141620,fg=#38bdf8"
+      set -g status-interval 5
 
       # True color support
       set -ag terminal-overrides ",xterm-256color:RGB"
+      set -ag terminal-overrides ",*kitty*:RGB"
 
       # Split panes with | and -
       bind | split-window -h -c "#{pane_current_path}"
@@ -495,6 +574,46 @@ XFCONFXML
       bind j select-pane -D
       bind k select-pane -U
       bind l select-pane -R
+
+      # Quick pane resize with repeat
+      bind -r H resize-pane -L 5
+      bind -r J resize-pane -D 5
+      bind -r K resize-pane -U 5
+      bind -r L resize-pane -R 5
+
+      # Claude Code workflow: quick split for a second terminal
+      bind C-c split-window -h -l 50% -c "#{pane_current_path}"
+      bind C-t split-window -v -l 30% -c "#{pane_current_path}"
+
+      # Swap panes
+      bind > swap-pane -D
+      bind < swap-pane -U
+
+      # Reload config
+      bind r source-file ~/.config/tmux/tmux.conf \; display "Config reloaded"
+
+      # Better copy mode
+      bind -T copy-mode-vi v send-keys -X begin-selection
+      bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "wl-copy"
+      bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
+
+      # Quick session switching
+      bind -r Tab switch-client -n
+      bind BTab switch-client -p
+
+      # Toggle status bar
+      bind b set-option status
+
+      # Pane border labels (show command running)
+      set -g pane-border-status top
+      set -g pane-border-format " #{pane_index}: #{pane_current_command} "
+
+      # Thumbs (quick copy paths/hashes/URLs)
+      set -g @thumbs-key Space
+      set -g @thumbs-alphabet colemak-homerow
+      set -g @thumbs-command 'echo -n {} | wl-copy'
+      set -g @thumbs-fg-color "#38bdf8"
+      set -g @thumbs-hint-fg-color "#f59e0b"
     '';
   };
 
