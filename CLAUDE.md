@@ -114,6 +114,20 @@ On NixOS, `python3Packages.foo` as a standalone system package does NOT make it 
 | Border | `#262a3a` | Separators |
 | Text | `#e0e6f0` | Primary text |
 
+## Zoho WorkDrive TrueSync
+
+TrueSync runs as a FUSE mount at `/home/kaika/ZohoWorkDrive/` with on-demand file downloading. Config lives in `~/.zohoworkdrivets/`. Started via autostart desktop entry using XWayland (Qt6 app, needs `QT_QPA_PLATFORM=xcb DISPLAY=:0`).
+
+**Context menu socket protocol** (`~/.zohoworkdrivets/zoho_teamdrive_contextmenusock`):
+- Messages are length-prefixed JSON: `<10-digit-zero-padded-length><JSON>`
+- Get menu: `{"getmenu":["/home/kaika/ZohoWorkDrive/FolderName"]}`
+- Trigger action: `{"Available offline":["/path"]}` or `{"Online only":["/path"]}` or `{"Refresh":["/path"]}`
+- Active option has checkmark: `"Online only ✔"`
+
+**KDE plugin** (`~/.zohoworkdrivets/bin/kde_plugins/zoho_ztdrive_contextmenu.so`) is KF5/Qt5 — incompatible with KF6 Dolphin from current nixpkgs. To load it for testing, use `nix-shell -p qt5.qtbase libsForQt5.kio libsForQt5.kcoreaddons` and `KPluginFactory::create<KAbstractFileItemActionPlugin>()`.
+
+**Database** (`~/.zohoworkdrivets/<account_id>/resources.db`): SQLite with `FileSystem` table. Status field is a bitmask — bit 2048 (0x800) = "available offline". Modifying the DB alone doesn't trigger downloads; must use the socket protocol.
+
 ## Key Conventions
 
 - User: `kaika`, hostname: `nixos`

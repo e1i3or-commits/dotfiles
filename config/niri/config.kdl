@@ -57,6 +57,19 @@ output "eDP-1" {
 }
 
 // ============================================================================
+// NAMED WORKSPACES
+// ============================================================================
+
+// DP-2 (vertical monitor) workspaces - windows here open floating by default
+workspace "vertical" {
+    open-on-output "DP-2"
+}
+
+workspace "vertical-2" {
+    open-on-output "DP-2"
+}
+
+// ============================================================================
 // LAYOUT CONFIGURATION
 // ============================================================================
 
@@ -268,32 +281,15 @@ window-rule {
     default-column-width { fixed 900; }
 }
 
-// Webapps - half width for messaging apps
+// Webapps - open floating on vertical monitor (DP-2)
 window-rule {
     match app-id=r"webapp-.*"
-    default-column-width { proportion 0.4; }
+    open-on-output "DP-2"
+    open-floating true
+    default-column-width { fixed 1100; }
+    default-window-height { fixed 900; }
 }
 
-// Communication apps - open on workspace 2
-window-rule {
-    match app-id="webapp-google-messages"
-    open-on-workspace "2"
-}
-
-window-rule {
-    match app-id="webapp-whatsapp"
-    open-on-workspace "2"
-}
-
-window-rule {
-    match app-id="webapp-cliq"
-    open-on-workspace "2"
-}
-
-window-rule {
-    match app-id="webapp-ringcentral"
-    open-on-workspace "2"
-}
 
 // Browsers - open on workspace 1
 window-rule {
@@ -418,6 +414,9 @@ binds {
     Mod+T { consume-or-expel-window-left; }
     Mod+G { consume-window-into-column; }
     Mod+Alt+G { expel-window-from-column; }
+
+    // Send window to vertical monitor (DP-2) as floating
+    Mod+Ctrl+Period { spawn "sh" "-c" "niri msg action move-window-to-monitor DP-2 && sleep 0.1 && niri msg action move-window-to-floating && niri msg action set-column-width fixed:1100 && niri msg action set-window-height fixed:900"; }
 
     // ========================================================================
     // LAUNCHING APPS
