@@ -1,0 +1,36 @@
+# Event Horizon Theme for Alacritty (Horizon Dark)
+
+[window]
+opacity = 0.88
+
+[colors.primary]
+background = '#1c1e26'
+foreground = '#fadad1'
+
+[colors.cursor]
+text = '#1c1e26'
+cursor = '#fadad1'
+
+[colors.selection]
+text = '#1c1e26'
+background = '#26bbd9'
+
+[colors.normal]
+black = '#1c1e26'
+red = '#e95678'
+green = '#29d398'
+yellow = '#ee64ac'
+blue = '#26bbd9'
+magenta = '#ee64ac'
+cyan = '#59e3e3'
+white = '#fadad1'
+
+[colors.bright]
+black = '#6c6f93'
+red = '#ec6a88'
+green = '#3fdaa4'
+yellow = '#fbc3a7'
+blue = '#3fc4de'
+magenta = '#f075b5'
+cyan = '#6be4e6'
+white = '#fadad1'

@@ -1,7 +1,200 @@
+[
 {
+    "name": "primary",
+    "output": "DP-3",
     "layer": "top",
     "position": "top",
-    "height": 34,
+    "height": 42,
+    "spacing": 0,
+    "margin-top": 6,
+    "margin-left": 10,
+    "margin-right": 10,
+
+    "modules-left": [
+        "custom/launcher",
+        "niri/workspaces",
+        "custom/cava"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "tray",
+        "custom/cliphist",
+        "custom/notifications",
+        "idle_inhibitor",
+        "custom/media",
+        "pulseaudio",
+        "network",
+        "cpu",
+        "memory",
+        "temperature",
+        "custom/power"
+    ],
+
+    "custom/launcher": {
+        "format": "",
+        "tooltip-format": "Apps  (Super+Space)",
+        "on-click": "fuzzel"
+    },
+
+    "niri/workspaces": {
+        "format": "{index}",
+        "on-click": "activate"
+    },
+
+    "niri/window": {
+        "format": " {title}",
+        "max-length": 70,
+        "rewrite": {
+            "": "scratch"
+        }
+    },
+
+    "custom/cava": {
+        "exec": "$HOME/.config/waybar/scripts/visualizer.sh",
+        "return-type": "json",
+        "tooltip": false
+    },
+
+    "clock": {
+        "format": "  {:%a %b %d   %I:%M %p}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "weeks-pos": "right",
+            "format": {
+                "months":   "<span color='#26bbd9'><b>{}</b></span>",
+                "days":     "<span color='#fadad1'>{}</span>",
+                "weeks":    "<span color='#ee64ac'>W{}</span>",
+                "weekdays": "<span color='#6c6f93'>{}</span>",
+                "today":    "<span color='#ee64ac'><b><u>{}</u></b></span>"
+            }
+        },
+        "on-click": "swaync-client -t -sw"
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 10
+    },
+
+    "custom/cliphist": {
+        "format": "",
+        "tooltip-format": "Clipboard  (Super+V)",
+        "on-click": "sh -c 'cliphist list | fuzzel --dmenu --prompt=\"clip: \" | cliphist decode | wl-copy'"
+    },
+
+    "custom/notifications": {
+        "tooltip": false,
+        "format": "{icon} {text}",
+        "format-icons": {
+            "notification":     "<span foreground='#ee64ac'></span>",
+            "none":             "",
+            "dnd-notification": "<span foreground='#ee64ac'></span>",
+            "dnd-none":         "",
+            "inhibited-notification": "<span foreground='#ee64ac'></span>",
+            "inhibited-none":   "",
+            "dnd-inhibited-notification": "<span foreground='#ee64ac'></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated":   "",
+            "deactivated": ""
+        },
+        "tooltip-format-activated": "Idle inhibitor: ON",
+        "tooltip-format-deactivated": "Idle inhibitor: off"
+    },
+
+    "custom/media": {
+        "format": "{icon} {text}",
+        "return-type": "json",
+        "max-length": 40,
+        "format-icons": {
+            "Playing": "",
+            "Paused": "",
+            "Stopped": ""
+        },
+        "exec": "playerctl --follow metadata --format '{\"text\": \"{{artist}} — {{title}}\", \"tooltip\": \"{{playerName}}: {{title}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' 2>/dev/null",
+        "on-click": "playerctl play-pause",
+        "on-click-right": "playerctl next",
+        "on-click-middle": "playerctl previous",
+        "escape": true
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "  muted",
+        "format-bluetooth": " {volume}%",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol",
+        "on-click-right": "swayosd-client --output-volume mute-toggle",
+        "scroll-step": 5
+    },
+
+    "network": {
+        "format-wifi": "  {essid}",
+        "format-ethernet": "  {ifname}",
+        "format-disconnected": "  offline",
+        "tooltip-format": "{ipaddr}/{cidr}\n  {bandwidthUpBits}    {bandwidthDownBits}",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
+        "interval": 5,
+        "on-click": "nm-connection-editor"
+    },
+
+    "cpu": {
+        "format": "  {usage}%",
+        "interval": 3,
+        "tooltip-format": "{avg_frequency} GHz\n{usage}% usage",
+        "on-click": "kitty -e btop"
+    },
+
+    "memory": {
+        "format": "  {percentage}%",
+        "interval": 5,
+        "tooltip-format": "{used:0.1f} GiB / {total:0.1f} GiB",
+        "on-click": "kitty -e btop"
+    },
+
+    "temperature": {
+        "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+        "input-filename": "temp1_input",
+        "format": "  {temperatureC}°C",
+        "critical-threshold": 85,
+        "format-critical": "  {temperatureC}°C",
+        "interval": 5
+    },
+
+    "custom/power": {
+        "format": "",
+        "tooltip-format": "Power menu",
+        "on-click": "wlogout"
+    }
+},
+{
+    "name": "secondary",
+    "output": "DP-2",
+    "layer": "top",
+    "position": "top",
+    "height": 42,
     "spacing": 0,
     "margin-top": 6,
     "margin-left": 10,
@@ -9,31 +202,20 @@
 
     "modules-left": ["niri/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+    "modules-right": ["pulseaudio", "tray"],
 
     "niri/workspaces": {
-        "format": "{icon}",
-        "format-icons": {
-            "active": "",
-            "default": ""
-        },
+        "format": "{index}",
         "on-click": "activate"
     },
 
+    "niri/window": {
+        "format": " {title}",
+        "max-length": 40
+    },
+
     "clock": {
-        "format": "{:%a %b %d  %H:%M}",
-        "tooltip-format": "<tt><small>{calendar}</small></tt>",
-        "calendar": {
-            "mode": "month",
-            "weeks-pos": "right",
-            "format": {
-                "months": "<span color='#f97316'><b>{}</b></span>",
-                "days": "<span color='#e6edf3'>{}</span>",
-                "weeks": "<span color='#22d3ee'>W{}</span>",
-                "weekdays": "<span color='#30363d'>{}</span>",
-                "today": "<span color='#f97316'><b><u>{}</u></b></span>"
-            }
-        }
+        "format": "{:%I:%M %p}"
     },
 
     "pulseaudio": {
@@ -42,30 +224,12 @@
         "format-icons": {
             "default": ["", "", ""]
         },
-        "on-click": "pavucontrol"
-    },
-
-    "network": {
-        "format-wifi": " {essid}",
-        "format-ethernet": " {ifname}",
-        "format-disconnected": " disconnected",
-        "tooltip-format": "{ipaddr}/{cidr}",
-        "on-click": "nm-connection-editor"
-    },
-
-    "battery": {
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-plugged": " {capacity}%",
-        "format-icons": ["", "", "", "", ""],
-        "states": {
-            "warning": 30,
-            "critical": 15
-        }
+        "scroll-step": 5
     },
 
     "tray": {
-        "icon-size": 16,
+        "icon-size": 14,
         "spacing": 8
     }
 }
+]

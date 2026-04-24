@@ -1,14 +1,14 @@
-# Cava Configuration - Event Horizon Theme (Horizon Dark)
+# Cava Configuration - Liquid Theme (Alpine Dashboard wallpaper)
 
 [general]
-framerate = 75
+framerate = 30
 autosens = 1
 sensitivity = 100
 bars = 0
-bar_width = 2
+bar_width = 1
 bar_spacing = 1
-lower_cutoff_freq = 25
-higher_cutoff_freq = 1000
+lower_cutoff_freq = 50
+higher_cutoff_freq = 10000
 
 [input]
 method = pipewire
@@ -30,23 +30,23 @@ frame_delimiter = 10
 background = default
 foreground = default
 
-# Event Horizon gradient: blue -> purple -> magenta -> coral -> peach
+# Liquid gradient: deep ocean -> wave -> cyan -> teal -> sea foam -> light foam
 gradient = 1
 gradient_count = 6
-gradient_color_1 = '#26bbd9'
-gradient_color_2 = '#59e3e3'
-gradient_color_3 = '#ee64ac'
-gradient_color_4 = '#e95678'
-gradient_color_5 = '#ee64ac'
-gradient_color_6 = '#fadad1'
+gradient_color_1 = '#0c4a6e'
+gradient_color_2 = '#0891b2'
+gradient_color_3 = '#06b6d4'
+gradient_color_4 = '#14b8a6'
+gradient_color_5 = '#22d3ee'
+gradient_color_6 = '#67e8f9'
 
 [smoothing]
 integral = 77
 monstercat = 0
-waves = 0
+waves = 1
 gravity = 100
 ignore = 0
-noise_reduction = 0.90
+noise_reduction = 0.77
 
 [eq]
 1 = 1

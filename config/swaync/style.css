@@ -1,0 +1,361 @@
+/* ============================================================
+ * SwayNotificationCenter — Event Horizon (Horizon Dark)
+ * ============================================================ */
+
+@define-color bg        #1c1e26;
+@define-color bg-alt    #232530;
+@define-color bg-raise  #2a2c3a;
+@define-color fg        #fadad1;
+@define-color muted     #6c6f93;
+@define-color accent    #26bbd9;
+@define-color active    #3fc4de;
+@define-color red       #e95678;
+@define-color green     #29d398;
+@define-color yellow    #ee64ac;
+@define-color magenta   #ee64ac;
+@define-color cyan      #59e3e3;
+
+* {
+  font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", monospace;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ── Individual notification popups ────────────────────── */
+
+.notification-row {
+  outline: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.notification {
+  background: alpha(@bg, 0.95);
+  border: 1px solid alpha(@muted, 0.55);
+  border-radius: 14px;
+  margin: 6px 10px;
+  padding: 0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+}
+
+.notification.low     { border-left: 3px solid @muted; }
+.notification.normal  { border-left: 3px solid @magenta; }
+.notification.critical{
+  border-left: 3px solid @red;
+  background: alpha(@bg, 0.98);
+}
+
+.notification-content {
+  padding: 12px 14px;
+  color: @fg;
+}
+
+.summary {
+  color: @fg;
+  font-weight: 700;
+}
+
+.time {
+  color: @muted;
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.body {
+  color: @fg;
+  margin-top: 4px;
+}
+
+.notification-action {
+  background: alpha(@bg-alt, 0.9);
+  color: @fg;
+  border: 1px solid alpha(@muted, 0.5);
+  border-radius: 8px;
+  margin: 4px 2px;
+  padding: 4px 10px;
+}
+
+.notification-action:hover {
+  background: alpha(@accent, 0.25);
+  border-color: @accent;
+  color: @active;
+}
+
+.close-button {
+  background: transparent;
+  color: @muted;
+  border: none;
+  padding: 0 8px;
+}
+
+.close-button:hover { color: @red; }
+
+/* ── Control center panel ──────────────────────────────── */
+
+.control-center {
+  background: alpha(@bg, 0.95);
+  border: 1px solid alpha(@muted, 0.55);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+}
+
+.control-center-list { background: transparent; }
+
+.control-center-list-placeholder {
+  color: @muted;
+  font-style: italic;
+}
+
+/* Header (title + Clear button) */
+.widget-title {
+  color: @fg;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 8px 10px 12px 10px;
+  border-bottom: 1px solid alpha(@muted, 0.25);
+  margin-bottom: 6px;
+}
+
+.widget-title > label {
+  color: @magenta;
+  letter-spacing: 0.5px;
+}
+
+.widget-title > button {
+  background: alpha(@bg-alt, 0.8);
+  color: @fg;
+  border: 1px solid alpha(@muted, 0.45);
+  border-radius: 10px;
+  padding: 4px 14px;
+  font-weight: 600;
+  transition: all 160ms ease;
+}
+
+.widget-title > button:hover {
+  background: @red;
+  border-color: @red;
+  color: @bg;
+  box-shadow: 0 0 10px alpha(@red, 0.55);
+}
+
+/* DND toggle */
+.widget-dnd {
+  color: @fg;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 12px;
+  margin: 4px 0;
+}
+
+.widget-dnd > switch {
+  background: alpha(@bg-alt, 0.9);
+  border: 1px solid alpha(@muted, 0.4);
+  border-radius: 20px;
+  min-width: 48px;
+  min-height: 24px;
+  transition: all 200ms ease;
+}
+
+.widget-dnd > switch:checked {
+  background: @magenta;
+  border-color: @magenta;
+  box-shadow: 0 0 10px alpha(@magenta, 0.5);
+}
+
+.widget-dnd > switch slider {
+  background: @fg;
+  border-radius: 50%;
+  border: none;
+  min-width: 18px;
+  min-height: 18px;
+  margin: 2px;
+}
+
+/* MPRIS media widget */
+.widget-mpris {
+  background: alpha(@bg-alt, 0.75);
+  border: 1px solid alpha(@muted, 0.35);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 8px 0;
+}
+
+.widget-mpris-player {
+  padding: 6px;
+  color: @fg;
+}
+
+.widget-mpris-album-art {
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+.widget-mpris-title {
+  color: @green;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.widget-mpris-subtitle {
+  color: @muted;
+  font-size: 12px;
+}
+
+.widget-mpris button {
+  background: transparent;
+  color: @accent;
+  border: none;
+  padding: 6px 10px;
+  font-size: 16px;
+  transition: color 160ms ease, text-shadow 200ms ease;
+}
+
+.widget-mpris button:hover {
+  color: @active;
+  text-shadow: 0 0 8px alpha(@active, 0.7);
+}
+
+/* Volume slider */
+.widget-volume {
+  background: alpha(@bg-alt, 0.75);
+  border: 1px solid alpha(@muted, 0.35);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 8px 0;
+  color: @fg;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.widget-volume > box > label {
+  color: @accent;
+  font-size: 22px;
+  padding: 0 10px 0 4px;
+  min-width: 28px;
+}
+
+.widget-volume > box > button {
+  background: alpha(@bg, 0.85);
+  color: @accent;
+  border: 1px solid alpha(@accent, 0.35);
+  border-radius: 10px;
+  padding: 4px 10px;
+  margin-left: 8px;
+  font-size: 16px;
+  transition: all 160ms ease;
+}
+
+.widget-volume > box > button:hover {
+  background: @accent;
+  color: @bg;
+  border-color: @accent;
+  box-shadow: 0 0 10px alpha(@accent, 0.55);
+}
+
+/* Slider trough / fill / thumb (applies to volume + any other scales) */
+trough {
+  background: alpha(@muted, 0.25);
+  border-radius: 10px;
+  min-height: 10px;
+  border: none;
+}
+
+highlight,
+progress {
+  background: linear-gradient(90deg, @accent 0%, @active 100%);
+  border-radius: 10px;
+  min-height: 10px;
+  box-shadow: 0 0 6px alpha(@active, 0.4);
+}
+
+scale slider {
+  background: @fg;
+  border: 2px solid @active;
+  border-radius: 50%;
+  min-width: 16px;
+  min-height: 16px;
+  margin: -5px 0;
+  box-shadow: 0 0 6px alpha(@active, 0.7);
+  transition: all 160ms ease;
+}
+
+scale slider:hover {
+  background: @active;
+  border-color: @fg;
+  box-shadow: 0 0 12px alpha(@active, 0.9);
+}
+
+/* Per-app volume dropdown rows */
+.widget-volume .per-app-volume {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid alpha(@muted, 0.25);
+}
+
+/* Button grid (custom quick toggles) */
+.widget-buttons-grid {
+  background: alpha(@bg-alt, 0.6);
+  border-radius: 14px;
+  padding: 10px;
+  margin: 8px 0;
+}
+
+.widget-buttons-grid > flowbox {
+  background: transparent;
+}
+
+/* Base button: big icon, dark chip, subtle border.
+   Per-button accents applied below via :nth-child(). */
+.widget-buttons-grid > flowbox > flowboxchild > button {
+  background: alpha(@bg, 0.85);
+  color: @fg;
+  border: 1px solid alpha(@muted, 0.35);
+  border-radius: 12px;
+  padding: 10px;
+  margin: 5px;
+  font-size: 28px;
+  font-weight: 600;
+  min-width: 60px;
+  min-height: 60px;
+  transition: all 180ms ease;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button label {
+  font-size: 28px;
+}
+
+/* Per-button accent colors (order matches config.json actions[]) */
+
+/* 1. Night mode ON  (moon)      — cyan  */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(1) > button       { color: @cyan;    border-color: alpha(@cyan, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(1) > button:hover { color: @bg; background: @cyan;    border-color: @cyan;    box-shadow: 0 0 14px alpha(@cyan, 0.65); }
+
+/* 2. Night mode OFF (sun)       — yellow */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(2) > button       { color: @yellow;  border-color: alpha(@yellow, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(2) > button:hover { color: @bg; background: @yellow;  border-color: @yellow;  box-shadow: 0 0 14px alpha(@yellow, 0.65); }
+
+/* 3. Lock                       — magenta */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(3) > button       { color: @magenta; border-color: alpha(@magenta, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(3) > button:hover { color: @bg; background: @magenta; border-color: @magenta; box-shadow: 0 0 14px alpha(@magenta, 0.65); }
+
+/* 4. Power                      — red */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(4) > button       { color: @red;     border-color: alpha(@red, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(4) > button:hover { color: @bg; background: @red;     border-color: @red;     box-shadow: 0 0 14px alpha(@red, 0.65); }
+
+/* 5. Clipboard                  — bright teal */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(5) > button       { color: @active;  border-color: alpha(@active, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(5) > button:hover { color: @bg; background: @active;  border-color: @active;  box-shadow: 0 0 14px alpha(@active, 0.65); }
+
+/* 6. Bluetooth                  — accent teal */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(6) > button       { color: @accent;  border-color: alpha(@accent, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(6) > button:hover { color: @bg; background: @accent;  border-color: @accent;  box-shadow: 0 0 14px alpha(@accent, 0.65); }
+
+/* 7. Network                    — accent teal */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(7) > button       { color: @accent;  border-color: alpha(@accent, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(7) > button:hover { color: @bg; background: @accent;  border-color: @accent;  box-shadow: 0 0 14px alpha(@accent, 0.65); }
+
+/* 8. Volume                     — green */
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(8) > button       { color: @green;   border-color: alpha(@green, 0.45); }
+.widget-buttons-grid > flowbox > flowboxchild:nth-child(8) > button:hover { color: @bg; background: @green;   border-color: @green;   box-shadow: 0 0 14px alpha(@green, 0.65); }

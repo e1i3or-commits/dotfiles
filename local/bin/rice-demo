@@ -1,0 +1,223 @@
+#!/usr/bin/env bash
+# rice-demo — autonomous Event Horizon showcase on workspace 3.
+#
+# Choreographed niri window spawns / animations / launcher popups for a
+# screen-recording pass. Smooth and methodical pacing; nothing snaps.
+# Every demo terminal is tagged with app-id "rice-demo" so cleanup is surgical.
+#
+# Usage:
+#   rice-demo                # full demo, cleans up afterward (~110s)
+#   rice-demo --no-cleanup   # leave windows open
+#   BEAT=3 rice-demo         # faster pacing (default BEAT=4 ≈ 2 bars @ 120bpm)
+
+set -u
+
+BEAT=${BEAT:-4}
+CLASS=rice-demo
+CLEANUP=1
+
+for arg in "$@"; do
+    case "$arg" in
+        --no-cleanup) CLEANUP=0 ;;
+        -h|--help)
+            sed -n '2,14p' "$0" | sed 's/^# \?//'
+            exit 0
+            ;;
+    esac
+done
+
+if ! command -v niri >/dev/null 2>&1 || ! niri msg version >/dev/null 2>&1; then
+    echo "rice-demo: niri IPC unavailable (not running under niri?)" >&2
+    exit 1
+fi
+
+beat()   { sleep "$BEAT"; }
+long()   { sleep "$((BEAT * 2))"; }
+short()  { sleep 1; }
+half()   { sleep 0.5; }
+action() { niri msg action "$@" >/dev/null; }
+launch() { niri msg action spawn -- kitty --class "$CLASS" --hold "$@" >/dev/null; }
+toast()  { notify-send -a "Event Horizon" "$1" "${2:-}"; }
+
+YAZI_SESSION=rice-demo-yazi
+yazi_key() { tmux send-keys -t "$YAZI_SESSION" "$@" 2>/dev/null || true; }
+
+# Show fuzzel pre-filtered on a query, hold it onscreen for `dwell` seconds,
+# then dismiss by killing the process (fuzzel exits cleanly on SIGTERM).
+fuzzel_peek() {
+    local query=$1 dwell=${2:-3}
+    niri msg action spawn -- sh -c "fuzzel --search='$query'" >/dev/null
+    sleep "$dwell"
+    pkill -x fuzzel 2>/dev/null || true
+    half
+}
+
+# Show cliphist history through fuzzel --dmenu, same dismiss mechanism.
+cliphist_peek() {
+    local dwell=${1:-4}
+    niri msg action spawn -- sh -c "cliphist list | fuzzel --dmenu --prompt='clip: ' >/dev/null" >/dev/null
+    sleep "$dwell"
+    pkill -x fuzzel 2>/dev/null || true
+    half
+}
+
+# ── Prep ─────────────────────────────────────────────────────────────────
+action focus-workspace 3
+long
+toast "Event Horizon" "rice showcase · starting"
+short
+
+# ── 1. fuzzel launcher reveal (empty, then pre-filtered) ────────────────
+fuzzel_peek "" 3
+fuzzel_peek "kit" 3
+
+# ── 2. fastfetch reveal (black-hole logo + theme colors) ────────────────
+launch -e bash -c 'fastfetch; sleep inf'
+long
+action center-column
+beat
+toast "fastfetch" "kitty graphics · custom PNG logo"
+
+# ── 3. neovim: syntax, splits, search highlight, scroll ─────────────────
+# (nvim caps -c at 10, so drive the sequence from a sourced vim script)
+NIX=/home/kaika/projects/local/nix-config
+NVIM_SCRIPT=$(mktemp --suffix=.vim)
+trap 'rm -f "$NVIM_SCRIPT"' EXIT
+cat > "$NVIM_SCRIPT" <<VIMEOF
+edit $NIX/flake.nix
+sleep 2
+normal! gg
+sleep 1
+vsplit $NIX/configuration.nix
+sleep 2
+normal! gg
+/home-manager
+sleep 2
+normal! 40Gzz
+sleep 2
+wincmd h
+sleep 1
+split $NIX/home/default.nix
+sleep 2
+normal! 50Gzz
+sleep 2
+wincmd =
+VIMEOF
+launch -e nvim -S "$NVIM_SCRIPT"
+long
+action fullscreen-window          # zoom into the code panes
+sleep 8                           # let the in-nvim :sleep sequence play out
+action fullscreen-window          # back to tile
+beat
+toast "neovim" "horizon dark · lua init · no plugins"
+
+# ── 4. btop beside the code (event-horizon theme in action) ─────────────
+launch -e btop
+long
+toast "btop" "live system telemetry"
+
+# ── 5. fuzzel search for a GUI app ──────────────────────────────────────
+fuzzel_peek "fire" 3
+
+# ── 6. yazi: file manager with autonomous navigation via tmux ───────────
+tmux kill-session -t "$YAZI_SESSION" 2>/dev/null || true
+tmux new-session -d -s "$YAZI_SESSION" -x 140 -y 40 \
+    "yazi $NIX" 2>/dev/null || true
+launch -e tmux attach -t "$YAZI_SESSION"
+long                              # let yazi draw + preview render
+# browse down the repo tree, step into config/, then niri/, preview configs
+yazi_key j; short
+yazi_key j; short
+yazi_key j; short
+yazi_key j; short
+yazi_key l; beat                  # enter highlighted dir
+yazi_key j; short
+yazi_key j; short
+yazi_key l; beat                  # step one deeper
+yazi_key j; short
+yazi_key j; short
+yazi_key h; short                 # back up
+yazi_key h; beat                  # back to repo root
+toast "yazi" "pure-rust file manager · live previews"
+
+# ── 7. clipboard history via cliphist + fuzzel dmenu ────────────────────
+cliphist_peek 4
+
+# ── 8. cava visualizer with fullscreen zoom ─────────────────────────────
+launch -e cava
+beat
+action fullscreen-window
+long
+action fullscreen-window          # back to tile
+beat
+toast "cava" "pipewire · multi-color pango bars"
+
+# ── 9. tiling showcase: width presets → move columns → tabbed view ──────
+# Focus the fastfetch column (leftmost-ish) and cycle width presets.
+for _ in 1 2 3 4; do
+    action focus-column-left
+    half
+done
+beat
+for _ in 1 2 3; do
+    action switch-preset-column-width
+    beat
+done
+beat
+
+# Reorder: shuffle the focused column one slot right, pause, back left.
+action move-column-right
+beat
+action move-column-right
+beat
+action move-column-left
+beat
+
+# Stack / unstack: consume the neighbour into a single column, pause, expel.
+action consume-window-into-column
+long
+action expel-window-from-column
+beat
+
+# Toggle tabbed display on the focused column for the fancy tab header.
+action toggle-column-tabbed-display
+long
+action toggle-column-tabbed-display
+beat
+
+# ── 10. niri overview: spatial wide-shot of every workspace ─────────────
+toast "niri" "overview · all workspaces"
+short
+action toggle-overview
+long
+long
+action toggle-overview            # back into the live workspace
+beat
+
+# ── 11. smooth horizontal pan across the full column stack ──────────────
+for _ in 1 2 3 4 5; do
+    action focus-column-left
+    short
+done
+for _ in 1 2 3 4 5; do
+    action focus-column-right
+    short
+done
+beat
+
+# ── 12. swaync panel peek (show the notification stack we've built) ─────
+command -v swaync-client >/dev/null && swaync-client -t >/dev/null 2>&1 || true
+long
+long
+command -v swaync-client >/dev/null && swaync-client -t >/dev/null 2>&1 || true
+beat
+
+# ── 13. final notification ──────────────────────────────────────────────
+toast "Rice complete" "NixOS · niri · waybar · kitty · fuzzel · swaync"
+long
+
+# ── Cleanup ─────────────────────────────────────────────────────────────
+if [ "$CLEANUP" -eq 1 ]; then
+    pkill -f "kitty --class $CLASS" 2>/dev/null || true
+    tmux kill-session -t "$YAZI_SESSION" 2>/dev/null || true
+fi

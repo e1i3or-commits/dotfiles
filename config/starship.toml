@@ -1,24 +1,24 @@
 format = "$directory$git_branch$git_status$cmd_duration$line_break$character"
 
 [character]
-error_symbol = "[❯](bold red)"
-success_symbol = "[❯](bold #f97316)"
+error_symbol = "[❯](bold #e95678)"
+success_symbol = "[❯](bold #ee64ac)"
 
 [cmd_duration]
 min_time = 2000
-style = "bold #30363d"
+style = "bold #6c6f93"
 
 [directory]
-style = "bold cyan"
+style = "bold #26bbd9"
 truncate_to_repo = true
 truncation_length = 3
 
 [git_branch]
-style = "bold #f97316"
+style = "bold #29d398"
 symbol = " "
 
 [git_status]
-modified = "[~$count](yellow)"
-staged = "[+$count](green)"
-style = "bold #f97316"
-untracked = "[?$count](blue)"
+modified = "[~$count](bold #ee64ac)"
+staged = "[+$count](bold #29d398)"
+style = "bold #29d398"
+untracked = "[?$count](bold #59e3e3)"

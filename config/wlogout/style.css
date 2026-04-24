@@ -1,0 +1,78 @@
+/* ============================================================
+ * wlogout — Horizon Chips (Event Horizon / Horizon Dark rice)
+ *
+ * Full-screen power menu; Nerd Font glyphs as button content
+ * (no PNG backgrounds). Each button gets its own accent color,
+ * hover fills with that accent + glowing shadow.
+ * ============================================================ */
+
+* {
+    background-image: none;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", monospace;
+    font-weight: 600;
+    transition: background-color 220ms ease, color 220ms ease,
+                border-color 220ms ease, box-shadow 260ms ease,
+                text-shadow 260ms ease;
+}
+
+window {
+    background-color: rgba(28, 30, 38, 0.92);
+}
+
+/* ── Base button: big centered glyph, dark chip ──────────── */
+
+button {
+    color: #fadad1;
+    background-color: rgba(35, 37, 48, 0.88);
+    border: 1px solid rgba(108, 111, 147, 0.45);
+    border-radius: 22px;
+    margin: 20px;
+    font-size: 72px;
+    min-width: 160px;
+    min-height: 160px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+button:focus,
+button:hover {
+    outline: none;
+    border-width: 2px;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55),
+                0 0 24px rgba(38, 187, 217, 0.45);
+}
+
+/* ── Per-action accents (idle) ───────────────────────────── */
+
+#lock      { color: #26bbd9; border-color: rgba(38, 187, 217, 0.45); }
+#logout    { color: #ee64ac; border-color: rgba(238, 100, 172, 0.45); }
+#suspend   { color: #ee64ac; border-color: rgba(238, 100, 172, 0.45); }
+#hibernate { color: #59e3e3; border-color: rgba(89, 227, 227, 0.45); }
+#reboot    { color: #ee64ac; border-color: rgba(238, 100, 172, 0.45); }
+#shutdown  { color: #e95678; border-color: rgba(233, 86, 120, 0.45); }
+
+/* ── Hover/focus: fill with that button's accent ─────────── */
+
+#lock:hover, #lock:focus {
+    background-color: #26bbd9; color: #1c1e26; border-color: #3fc4de;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.55), 0 0 28px rgba(38, 187, 217, 0.70);
+}
+#logout:hover, #logout:focus {
+    background-color: #ee64ac; color: #1c1e26; border-color: #ee64ac;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.55), 0 0 28px rgba(238, 100, 172, 0.70);
+}
+#suspend:hover, #suspend:focus {
+    background-color: #ee64ac; color: #1c1e26; border-color: #ee64ac;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.55), 0 0 28px rgba(238, 100, 172, 0.70);
+}
+#hibernate:hover, #hibernate:focus {
+    background-color: #59e3e3; color: #1c1e26; border-color: #59e3e3;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.55), 0 0 28px rgba(89, 227, 227, 0.70);
+}
+#reboot:hover, #reboot:focus {
+    background-color: #ee64ac; color: #1c1e26; border-color: #ee64ac;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.55), 0 0 28px rgba(238, 100, 172, 0.70);
+}
+#shutdown:hover, #shutdown:focus {
+    background-color: #e95678; color: #1c1e26; border-color: #e95678;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.55), 0 0 28px rgba(233, 86, 120, 0.75);
+}

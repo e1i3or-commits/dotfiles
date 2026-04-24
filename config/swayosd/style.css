@@ -1,0 +1,44 @@
+/* ============================================================
+ * SwayOSD — Event Horizon (Horizon Dark)
+ * Volume / brightness / caps-lock on-screen display
+ * ============================================================ */
+
+window#osd {
+    border-radius: 18px;
+    border: 1px solid rgba(108, 111, 147, 0.55);
+    background: rgba(28, 30, 38, 0.96);
+    padding: 16px 20px;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+}
+
+window#osd #container {
+    margin: 4px 6px;
+}
+
+window#osd image,
+window#osd label {
+    color: #fadad1;
+    -gtk-icon-effect: none;
+}
+
+window#osd progressbar {
+    min-height: 10px;
+    border-radius: 8px;
+    background: rgba(108, 111, 147, 0.3);
+    border: none;
+}
+
+window#osd progressbar > trough {
+    background: rgba(108, 111, 147, 0.3);
+    border-radius: 8px;
+    border: none;
+    min-height: 10px;
+}
+
+window#osd progressbar > trough > progress {
+    background-color: #26bbd9;
+    background-image: linear-gradient(to right, #26bbd9, #3fc4de);
+    border-radius: 8px;
+    border: none;
+    min-height: 10px;
+}

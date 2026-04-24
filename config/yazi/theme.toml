@@ -1,121 +1,121 @@
-# Yazi Theme - Midnight Ember
+# Yazi Theme - Event Horizon (Horizon Dark)
 
 [manager]
-cwd = { fg = "#22d3ee", bold = true }
-hovered = { fg = "#0d1117", bg = "#f97316", bold = true }
+cwd = { fg = "#26bbd9", bold = true }
+hovered = { fg = "#1c1e26", bg = "#26bbd9", bold = true }
 preview_hovered = { underline = true }
-find_keyword = { fg = "#f97316", bold = true, italic = true }
-find_position = { fg = "#22d3ee", bg = "reset", bold = true, italic = true }
-marker_copied = { fg = "#22c55e", bg = "#22c55e" }
-marker_cut = { fg = "#ef4444", bg = "#ef4444" }
-marker_selected = { fg = "#f97316", bg = "#f97316" }
-tab_active = { fg = "#0d1117", bg = "#f97316", bold = true }
-tab_inactive = { fg = "#e6edf3", bg = "#161b22" }
+find_keyword = { fg = "#ee64ac", bold = true, italic = true }
+find_position = { fg = "#59e3e3", bg = "reset", bold = true, italic = true }
+marker_copied = { fg = "#29d398", bg = "#29d398" }
+marker_cut = { fg = "#e95678", bg = "#e95678" }
+marker_selected = { fg = "#ee64ac", bg = "#ee64ac" }
+tab_active = { fg = "#1c1e26", bg = "#26bbd9", bold = true }
+tab_inactive = { fg = "#fadad1", bg = "#232530" }
 tab_width = 1
-count_copied = { fg = "#0d1117", bg = "#22c55e" }
-count_cut = { fg = "#0d1117", bg = "#ef4444" }
-count_selected = { fg = "#0d1117", bg = "#f97316" }
+count_copied = { fg = "#1c1e26", bg = "#29d398" }
+count_cut = { fg = "#1c1e26", bg = "#e95678" }
+count_selected = { fg = "#1c1e26", bg = "#ee64ac" }
 border_symbol = "│"
-border_style = { fg = "#30363d" }
+border_style = { fg = "#6c6f93" }
 
 [status]
 separator_open = ""
 separator_close = ""
-separator_style = { fg = "#161b22", bg = "#161b22" }
+separator_style = { fg = "#232530", bg = "#232530" }
 
-mode_normal = { fg = "#0d1117", bg = "#22d3ee", bold = true }
-mode_select = { fg = "#0d1117", bg = "#f97316", bold = true }
-mode_unset = { fg = "#0d1117", bg = "#ef4444", bold = true }
+mode_normal = { fg = "#1c1e26", bg = "#26bbd9", bold = true }
+mode_select = { fg = "#1c1e26", bg = "#ee64ac", bold = true }
+mode_unset = { fg = "#1c1e26", bg = "#e95678", bold = true }
 
-progress_label = { fg = "#e6edf3", bold = true }
-progress_normal = { fg = "#30363d", bg = "#161b22" }
-progress_error = { fg = "#ef4444", bg = "#161b22" }
+progress_label = { fg = "#fadad1", bold = true }
+progress_normal = { fg = "#6c6f93", bg = "#232530" }
+progress_error = { fg = "#e95678", bg = "#232530" }
 
-permissions_t = { fg = "#22d3ee" }
-permissions_r = { fg = "#eab308" }
-permissions_w = { fg = "#ef4444" }
-permissions_x = { fg = "#22c55e" }
-permissions_s = { fg = "#484f58" }
+permissions_t = { fg = "#59e3e3" }
+permissions_r = { fg = "#ee64ac" }
+permissions_w = { fg = "#e95678" }
+permissions_x = { fg = "#29d398" }
+permissions_s = { fg = "#6c6f93" }
 
 [select]
-border = { fg = "#f97316" }
-active = { fg = "#f97316", bold = true }
-inactive = { fg = "#e6edf3" }
+border = { fg = "#26bbd9" }
+active = { fg = "#26bbd9", bold = true }
+inactive = { fg = "#fadad1" }
 
 [input]
-border = { fg = "#f97316" }
-title = { fg = "#f97316" }
-value = { fg = "#e6edf3" }
+border = { fg = "#26bbd9" }
+title = { fg = "#ee64ac" }
+value = { fg = "#fadad1" }
 selected = { reversed = true }
 
 [completion]
-border = { fg = "#30363d" }
-active = { fg = "#0d1117", bg = "#f97316" }
-inactive = { fg = "#e6edf3" }
+border = { fg = "#6c6f93" }
+active = { fg = "#1c1e26", bg = "#26bbd9" }
+inactive = { fg = "#fadad1" }
 
 [tasks]
-border = { fg = "#30363d" }
-title = { fg = "#f97316" }
-hovered = { fg = "#f97316", underline = true }
+border = { fg = "#6c6f93" }
+title = { fg = "#ee64ac" }
+hovered = { fg = "#26bbd9", underline = true }
 
 [which]
 cols = 3
-mask = { bg = "#161b22" }
-cand = { fg = "#22d3ee" }
-rest = { fg = "#484f58" }
-desc = { fg = "#e6edf3" }
+mask = { bg = "#232530" }
+cand = { fg = "#59e3e3" }
+rest = { fg = "#6c6f93" }
+desc = { fg = "#fadad1" }
 separator = "  "
-separator_style = { fg = "#30363d" }
+separator_style = { fg = "#6c6f93" }
 
 [help]
-on = { fg = "#22d3ee" }
-run = { fg = "#f97316" }
-desc = { fg = "#e6edf3" }
+on = { fg = "#59e3e3" }
+run = { fg = "#ee64ac" }
+desc = { fg = "#fadad1" }
 hovered = { reversed = true, bold = true }
-footer = { fg = "#484f58", bg = "#161b22" }
+footer = { fg = "#6c6f93", bg = "#232530" }
 
 [notify]
-title_info = { fg = "#22d3ee" }
-title_warn = { fg = "#eab308" }
-title_error = { fg = "#ef4444" }
+title_info = { fg = "#26bbd9" }
+title_warn = { fg = "#ee64ac" }
+title_error = { fg = "#e95678" }
 
 [filetype]
 rules = [
     # Directories
-    { name = "*/", fg = "#22d3ee", bold = true },
+    { name = "*/", fg = "#26bbd9", bold = true },
 
     # Media
-    { mime = "image/*", fg = "#f5c2e7" },
-    { mime = "video/*", fg = "#22d3ee" },
-    { mime = "audio/*", fg = "#eab308" },
+    { mime = "image/*", fg = "#f075b5" },
+    { mime = "video/*", fg = "#59e3e3" },
+    { mime = "audio/*", fg = "#ee64ac" },
 
     # Archives
-    { mime = "application/zip", fg = "#f97316" },
-    { mime = "application/gzip", fg = "#f97316" },
-    { mime = "application/x-tar", fg = "#f97316" },
-    { mime = "application/x-rar", fg = "#f97316" },
-    { mime = "application/x-7z-compressed", fg = "#f97316" },
+    { mime = "application/zip", fg = "#ee64ac" },
+    { mime = "application/gzip", fg = "#ee64ac" },
+    { mime = "application/x-tar", fg = "#ee64ac" },
+    { mime = "application/x-rar", fg = "#ee64ac" },
+    { mime = "application/x-7z-compressed", fg = "#ee64ac" },
 
     # Documents
-    { mime = "application/pdf", fg = "#ef4444" },
-    { mime = "application/doc", fg = "#22d3ee" },
-    { mime = "text/*", fg = "#22c55e" },
+    { mime = "application/pdf", fg = "#e95678" },
+    { mime = "application/doc", fg = "#26bbd9" },
+    { mime = "text/*", fg = "#29d398" },
 
     # Executables
-    { mime = "application/x-executable", fg = "#22c55e" },
-    { name = "*.sh", fg = "#22c55e" },
+    { mime = "application/x-executable", fg = "#29d398" },
+    { name = "*.sh", fg = "#29d398" },
 
     # Config files
-    { name = "*.toml", fg = "#eab308" },
-    { name = "*.yaml", fg = "#eab308" },
-    { name = "*.yml", fg = "#eab308" },
-    { name = "*.json", fg = "#eab308" },
-    { name = "*.nix", fg = "#22d3ee" },
-    { name = "*.kdl", fg = "#22d3ee" },
+    { name = "*.toml", fg = "#ee64ac" },
+    { name = "*.yaml", fg = "#ee64ac" },
+    { name = "*.yml", fg = "#ee64ac" },
+    { name = "*.json", fg = "#ee64ac" },
+    { name = "*.nix", fg = "#59e3e3" },
+    { name = "*.kdl", fg = "#59e3e3" },
 
     # Git
-    { name = ".git*", fg = "#f97316" },
+    { name = ".git*", fg = "#ee64ac" },
 
     # Default
-    { name = "*", fg = "#e6edf3" },
+    { name = "*", fg = "#fadad1" },
 ]

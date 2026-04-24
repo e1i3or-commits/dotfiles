@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# Elgato Key Light control via REST API (port 9123)
+# Usage: keylight [toggle|on|off|brightness <0-100>|temperature <2900-7000>|status|discover]
+
+CACHE_FILE="$HOME/.cache/keylight-ip"
+API_PORT=9123
+
+# Discover Key Light IP via mDNS
+discover_light() {
+    local result
+    result=$(avahi-browse -t _elg._tcp --resolve -p 2>/dev/null | grep "^=" | head -1)
+    if [[ -z "$result" ]]; then
+        echo "No Elgato Key Light found on network" >&2
+        return 1
+    fi
+    local ip
+    ip=$(echo "$result" | cut -d';' -f8)
+    if [[ -z "$ip" ]]; then
+        echo "Could not parse Key Light IP" >&2
+        return 1
+    fi
+    mkdir -p "$(dirname "$CACHE_FILE")"
+    echo "$ip" > "$CACHE_FILE"
+    echo "$ip"
+}
+
+# Get the Key Light IP (cached or discover)
+get_ip() {
+    if [[ -f "$CACHE_FILE" ]]; then
+        local ip
+        ip=$(cat "$CACHE_FILE")
+        # Verify cached IP responds
+        if curl -s --connect-timeout 1 "http://${ip}:${API_PORT}/elgato/lights" > /dev/null 2>&1; then
+            echo "$ip"
+            return 0
+        fi
+    fi
+    discover_light
+}
+
+# GET current light state
+get_state() {
+    local ip="$1"
+    curl -s "http://${ip}:${API_PORT}/elgato/lights"
+}
+
+# PUT light state
+set_state() {
+    local ip="$1"
+    local payload="$2"
+    curl -s -X PUT "http://${ip}:${API_PORT}/elgato/lights" \
+        -H "Content-Type: application/json" \
+        -d "$payload"
+}
+
+# Convert Kelvin to Elgato's temperature value (143-344, inverse scale)
+kelvin_to_elgato() {
+    local kelvin="$1"
+    echo $(( 1000000 / kelvin ))
+}
+
+# Convert Elgato temp back to Kelvin
+elgato_to_kelvin() {
+    local val="$1"
+    echo $(( 1000000 / val ))
+}
+
+ip=$(get_ip)
+if [[ -z "$ip" ]]; then
+    notify-send "Key Light" "Could not find Key Light on network" -i dialog-error
+    exit 1
+fi
+
+case "${1:-toggle}" in
+    toggle)
+        state=$(get_state "$ip")
+        current=$(echo "$state" | jq '.lights[0].on')
+        if [[ "$current" == "1" ]]; then
+            set_state "$ip" '{"numberOfLights":1,"lights":[{"on":0}]}' > /dev/null
+            notify-send "Key Light" "Off" -i video-display
+        else
+            set_state "$ip" '{"numberOfLights":1,"lights":[{"on":1}]}' > /dev/null
+            notify-send "Key Light" "On" -i video-display
+        fi
+        ;;
+    on)
+        set_state "$ip" '{"numberOfLights":1,"lights":[{"on":1}]}' > /dev/null
+        notify-send "Key Light" "On" -i video-display
+        ;;
+    off)
+        set_state "$ip" '{"numberOfLights":1,"lights":[{"on":0}]}' > /dev/null
+        notify-send "Key Light" "Off" -i video-display
+        ;;
+    brightness)
+        val="${2:?Usage: keylight brightness <0-100>}"
+        if (( val < 0 || val > 100 )); then
+            echo "Brightness must be 0-100" >&2
+            exit 1
+        fi
+        set_state "$ip" "{\"numberOfLights\":1,\"lights\":[{\"on\":1,\"brightness\":${val}}]}" > /dev/null
+        notify-send "Key Light" "Brightness: ${val}%" -i video-display
+        ;;
+    temperature|temp)
+        kelvin="${2:?Usage: keylight temperature <2900-7000>}"
+        if (( kelvin < 2900 || kelvin > 7000 )); then
+            echo "Temperature must be 2900-7000 K" >&2
+            exit 1
+        fi
+        elgato_val=$(kelvin_to_elgato "$kelvin")
+        set_state "$ip" "{\"numberOfLights\":1,\"lights\":[{\"on\":1,\"temperature\":${elgato_val}}]}" > /dev/null
+        notify-send "Key Light" "Temperature: ${kelvin}K" -i video-display
+        ;;
+    status)
+        state=$(get_state "$ip")
+        on=$(echo "$state" | jq '.lights[0].on')
+        brightness=$(echo "$state" | jq '.lights[0].brightness')
+        temp_raw=$(echo "$state" | jq '.lights[0].temperature')
+        temp_k=$(elgato_to_kelvin "$temp_raw")
+        if [[ "$on" == "1" ]]; then
+            echo "Key Light: ON"
+        else
+            echo "Key Light: OFF"
+        fi
+        echo "Brightness: ${brightness}%"
+        echo "Temperature: ${temp_k}K"
+        echo "IP: ${ip}"
+        ;;
+    discover)
+        new_ip=$(discover_light)
+        if [[ -n "$new_ip" ]]; then
+            echo "Found Key Light at ${new_ip}"
+            notify-send "Key Light" "Found at ${new_ip}" -i video-display
+        fi
+        ;;
+    *)
+        echo "Usage: keylight [toggle|on|off|brightness <0-100>|temperature <2900-7000>|status|discover]"
+        exit 1
+        ;;
+esac

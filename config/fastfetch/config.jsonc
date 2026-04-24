@@ -1,22 +1,21 @@
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
     "logo": {
-        "source": "nixos_old",
-        "color": {
-            "1": "38;2;249;115;22",
-            "2": "38;2;34;211;238"
-        },
+        "source": "/home/kaika/nix-config/config/fastfetch/logo.png",
+        "type": "kitty-direct",
+        "width": 28,
+        "height": 14,
         "padding": {
-            "top": 0,
-            "left": 1,
-            "right": 2
+            "top": 1,
+            "left": 2,
+            "right": 3
         }
     },
     "display": {
         "separator": "  ",
         "color": {
-            "keys": "38;2;249;115;22",
-            "title": "38;2;249;115;22"
+            "keys": "38;2;238;100;172",
+            "title": "38;2;238;100;172"
         }
     },
     "modules": [
@@ -31,53 +30,53 @@
         {
             "type": "os",
             "key": " OS",
-            "keyColor": "38;2;249;115;22"
+            "keyColor": "38;2;38;187;217"
         },
         {
             "type": "kernel",
             "key": " Kernel",
-            "keyColor": "38;2;249;115;22"
+            "keyColor": "38;2;38;187;217"
         },
         {
             "type": "wm",
             "key": " WM",
-            "keyColor": "38;2;249;115;22"
+            "keyColor": "38;2;38;187;217"
         },
         {
             "type": "terminal",
             "key": " Term",
-            "keyColor": "38;2;249;115;22"
+            "keyColor": "38;2;38;187;217"
         },
         {
             "type": "shell",
             "key": " Shell",
-            "keyColor": "38;2;249;115;22"
+            "keyColor": "38;2;38;187;217"
         },
         {
             "type": "packages",
             "key": " Pkgs",
-            "keyColor": "38;2;249;115;22"
+            "keyColor": "38;2;38;187;217"
         },
         "break",
         {
             "type": "cpu",
             "key": " CPU",
-            "keyColor": "38;2;230;237;243"
+            "keyColor": "38;2;250;218;209"
         },
         {
             "type": "gpu",
             "key": " GPU",
-            "keyColor": "38;2;230;237;243"
+            "keyColor": "38;2;250;218;209"
         },
         {
             "type": "memory",
             "key": " RAM",
-            "keyColor": "38;2;230;237;243"
+            "keyColor": "38;2;250;218;209"
         },
         {
             "type": "disk",
             "key": " Disk",
-            "keyColor": "38;2;230;237;243"
+            "keyColor": "38;2;250;218;209"
         },
         "break",
         {

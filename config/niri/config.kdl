@@ -1,4 +1,4 @@
-// Niri Configuration - VIBE MODE (Midnight Ember Theme)
+// Niri Configuration - VIBE MODE (Event Horizon Theme — Horizon Dark)
 // Full rice: gaps, transparency, smooth animations
 // Toggle with Super+Shift+V
 
@@ -36,10 +36,21 @@ input {
 // OUTPUT CONFIGURATION
 // ============================================================================
 
-// Samsung Odyssey G9 (49" ultrawide)
+// MSI MPG 491C QD-OLED (49" ultrawide, 5120x1440 @ 100Hz RGB 4:4:4)
+// DP 1.4 bandwidth: 5120x1440@144Hz exceeds 25.92 Gbps → subsampling mangles text.
+// 100Hz fits cleanly at full RGB 4:4:4 8-bit. Bump higher only if DSC engages.
 output "DP-3" {
-    mode "5120x1440@119.999"
-    scale 1.25
+    mode "5120x1440@99.932"
+    scale 1.0
+    position x=0 y=0
+    variable-refresh-rate on-demand=true
+}
+
+// Samsung LC34G55T (34" vertical)
+output "DP-2" {
+    mode "3440x1440@99.982"
+    transform "90"
+    position x=5120 y=0
 }
 
 // Laptop display (if connected)
@@ -53,6 +64,7 @@ output "eDP-1" {
 
 layout {
     gaps 12
+    background-color "transparent"
 
     center-focused-column "never"
 
@@ -64,17 +76,17 @@ layout {
 
     default-column-width { proportion 0.5; }
 
-    // Midnight Ember focus ring - Orange accent
+    // Event Horizon focus ring — Teal accent
     focus-ring {
         width 1
-        active-color "#f97316"
-        inactive-color "#30363d"
+        active-color "#3fc4de"
+        inactive-color "#6c6f93"
     }
 
     border {
-        width 1
-        active-color "#f97316"
-        inactive-color "#161b22"
+        width 3
+        active-color "#26bbd9"
+        inactive-color "#1c1e26"
     }
 }
 
@@ -82,9 +94,10 @@ layout {
 // SPAWN AT STARTUP
 // ============================================================================
 
-spawn-at-startup "mako"
-spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
-spawn-at-startup "swayidle" "-w"
+// Desktop shell stack (waybar + swaync + swww + swayidle + swayosd + cliphist)
+// All managed as systemd user units via PartOf=graphical-session.target.
+// Niri starts that target for us; we just need to nudge it once.
+spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE; systemctl --user start graphical-session.target"
 
 // ============================================================================
 // XWAYLAND (for legacy X11 apps like Zoho WorkDrive)
@@ -159,6 +172,26 @@ animations {
         duration-ms 200
         curve "ease-out-cubic"
     }
+}
+
+// ============================================================================
+// GLOBAL WINDOW / LAYER RULES
+// ============================================================================
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+// swww wallpaper: render *behind* everything so blur / transitions sit under
+// windows rather than over them on workspace switches.
+layer-rule {
+    match namespace="^swww-daemon$"
+    place-within-backdrop true
+}
+
+debug {
+    honor-xdg-activation-with-invalid-serial
 }
 
 // ============================================================================
@@ -389,7 +422,7 @@ binds {
 
     Mod+Return { spawn "kitty"; }
     Mod+Shift+B { spawn "brave"; }
-    Mod+Shift+F { spawn "thunar"; }
+    Mod+Shift+F { spawn "thunar" "--window"; }
     Mod+Shift+M { spawn "spotify"; }
     Mod+Shift+N { spawn "code"; }
     Mod+Shift+O { spawn "obsidian"; }
@@ -431,8 +464,16 @@ binds {
     Mod+Ctrl+B { spawn "blueman-manager"; }
     Mod+Ctrl+W { spawn "nm-connection-editor"; }
     Mod+Ctrl+L { spawn "swaylock"; }
-    Mod+Escape { quit; }
+
+    // Shell panels (replacing Noctalia IPC)
+    // Mod+N  → toggle swaync notification panel
+    // Mod+C  → toggle swaync control-center (same panel, explicit switcher)
+    // Mod+Escape → wlogout power menu (was quit — too easy to hit by accident)
+    Mod+N { spawn "swaync-client" "-t" "-sw"; }
+    Mod+C { spawn "swaync-client" "-t" "-sw"; }
+    Mod+Escape { spawn "wlogout"; }
     Mod+Ctrl+R { spawn "niri" "msg" "action" "load-config-file"; }
+    Mod+Ctrl+Q { quit; }
 
     // ========================================================================
     // SCREENSHOTS & CLIPBOARD
@@ -441,16 +482,22 @@ binds {
     Mod+Shift+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; }
     Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy && grim -g \"$(slurp)\" ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
     Mod+Print { spawn "sh" "-c" "grim ~/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png"; }
-    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | wofi --dmenu | cliphist decode | wl-copy"; }
+    Mod+V      { spawn "sh" "-c" "cliphist list | fuzzel --dmenu --prompt='clip: ' | cliphist decode | wl-copy"; }
+    Mod+Ctrl+V { spawn "sh" "-c" "cliphist list | fuzzel --dmenu --prompt='clip: ' | cliphist decode | wl-copy"; }
 
     // ========================================================================
     // MEDIA KEYS
     // ========================================================================
 
-    XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-    XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-    XF86AudioMute        { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86AudioMicMute     { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    // Volume / mic / brightness go through swayosd so the OSD pops
+    XF86AudioRaiseVolume { spawn "swayosd-client" "--output-volume" "raise"; }
+    XF86AudioLowerVolume { spawn "swayosd-client" "--output-volume" "lower"; }
+    XF86AudioMute        { spawn "swayosd-client" "--output-volume" "mute-toggle"; }
+    XF86AudioMicMute     { spawn "swayosd-client" "--input-volume" "mute-toggle"; }
+
+    XF86MonBrightnessUp   { spawn "swayosd-client" "--brightness" "raise"; }
+    XF86MonBrightnessDown { spawn "swayosd-client" "--brightness" "lower"; }
+
     XF86AudioPlay  { spawn "playerctl" "play-pause"; }
     XF86AudioPause { spawn "playerctl" "play-pause"; }
     XF86AudioNext  { spawn "playerctl" "next"; }

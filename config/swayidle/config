@@ -1,17 +1,23 @@
-# Swayidle configuration
-# Manages screen locking and system suspend on idle
+# ============================================================
+# Swayidle — Event Horizon
+# Dim → lock → screen off → hibernate chain
+# ============================================================
+
+# Pre-lock warning: dim the display after 4 minutes (soft poke)
+timeout 240 'brightnessctl -s set 20%-' resume 'brightnessctl -r'
 
 # Lock screen after 5 minutes of inactivity
 timeout 300 'swaylock -f'
 
-# Turn off display after 10 minutes
-timeout 600 'niri msg action power-off-monitors'
+# Turn off displays after 10 minutes
+timeout 600 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors'
 
-# Suspend after 30 minutes (only on battery - uncomment if on laptop)
-# timeout 1800 'systemctl suspend'
+# Fall to hibernate after 30 minutes (HibernateDelaySec in configuration.nix
+# also runs from S3; this covers desktop idle without suspend)
+timeout 1800 'systemctl hibernate'
 
-# Lock before sleep
+# Always lock before any sleep/hibernate
 before-sleep 'swaylock -f'
 
-# Lock on lid close (laptop)
-# lock 'swaylock -f'
+# Re-run the lock when session lock is requested by loginctl
+lock 'swaylock -f'

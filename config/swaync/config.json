@@ -1,0 +1,93 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "right",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-layer": "top",
+  "layer-effects": true,
+  "cssPriority": "user",
+  "control-center-margin-top": 8,
+  "control-center-margin-bottom": 8,
+  "control-center-margin-right": 8,
+  "control-center-margin-left": 8,
+  "notification-2fa-action": true,
+  "notification-inline-replies": true,
+  "notification-icon-size": 48,
+  "notification-body-image-height": 180,
+  "notification-body-image-width": 220,
+  "timeout": 6,
+  "timeout-low": 4,
+  "timeout-critical": 0,
+  "fit-to-screen": false,
+  "control-center-width": 440,
+  "control-center-height": 720,
+  "notification-window-width": 440,
+  "keyboard-shortcuts": true,
+  "image-visibility": "when-available",
+  "transition-time": 200,
+  "hide-on-clear": false,
+  "hide-on-action": true,
+  "script-fail-notify": true,
+  "widgets": [
+    "title",
+    "dnd",
+    "mpris",
+    "volume",
+    "buttons-grid",
+    "notifications"
+  ],
+  "widget-config": {
+    "title": {
+      "text": "Notifications",
+      "clear-all-button": true,
+      "button-text": "Clear"
+    },
+    "dnd": {
+      "text": "Do Not Disturb"
+    },
+    "mpris": {
+      "image-size": 96,
+      "image-radius": 10
+    },
+    "volume": {
+      "label": "󰕾",
+      "show-per-app": true
+    },
+    "buttons-grid": {
+      "actions": [
+        {
+          "label": "󰖔",
+          "command": "sh -c 'wlsunset -T 5500 -t 3500 &'"
+        },
+        {
+          "label": "󰖙",
+          "command": "pkill wlsunset"
+        },
+        {
+          "label": "󰌾",
+          "command": "swaylock"
+        },
+        {
+          "label": "󰐥",
+          "command": "wlogout"
+        },
+        {
+          "label": "󰅇",
+          "command": "sh -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'"
+        },
+        {
+          "label": "󰂯",
+          "command": "blueman-manager"
+        },
+        {
+          "label": "󰖩",
+          "command": "nm-connection-editor"
+        },
+        {
+          "label": "󰕾",
+          "command": "pavucontrol"
+        }
+      ]
+    }
+  }
+}

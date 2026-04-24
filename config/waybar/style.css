@@ -1,135 +1,309 @@
-/* Waybar - Midnight Ember Theme */
+/* ============================================================
+ * Waybar — Horizon Chips (Event Horizon / Horizon Dark rice)
+ *
+ * Each module is a standalone rounded chip with its own accent.
+ * Dark chip bg, accent-colored border + text, hover fills with
+ * a translucent accent glow.
+ *
+ * Palette:
+ *   bg        #1c1e26   chip base
+ *   bg-soft   #232530   elevated
+ *   fg        #fadad1   primary text
+ *   accent    #26bbd9   teal
+ *   active    #3fc4de   bright teal
+ *   red       #e95678
+ *   green     #29d398
+ *   yellow    #ee64ac
+ *   magenta   #ee64ac
+ *   cyan      #59e3e3
+ *   muted     #6c6f93
+ * ============================================================ */
 
 * {
-    font-family: "JetBrainsMono Nerd Font", monospace;
-    font-size: 13px;
-    font-weight: 500;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 0;
+    border: none;
 }
 
 window#waybar {
-    background: rgba(13, 17, 23, 0.85);
-    border-radius: 12px;
-    border: 1px solid #30363d;
-}
-
-window#waybar.hidden {
-    opacity: 0.2;
-}
-
-/* All modules */
-#workspaces,
-#clock,
-#pulseaudio,
-#network,
-#battery,
-#tray {
-    padding: 0 12px;
-    margin: 4px 4px;
-    color: #e6edf3;
-}
-
-/* Workspaces */
-#workspaces {
     background: transparent;
-    padding: 0 4px;
+    color: #fadad1;
+    transition: background-color 0.25s ease;
+}
+
+window#waybar.hidden { opacity: 0.15; }
+
+/* ── Group containers: thin spacers, no pill ─────────────── */
+
+.modules-left,
+.modules-center,
+.modules-right {
+    background-color: transparent;
+    padding: 2px 4px;
+    margin: 0 2px;
+}
+
+.modules-left  { margin-left: 0; }
+.modules-right { margin-right: 0; }
+
+/* ── Base chip styling applied to every module ───────────── */
+
+#custom-launcher, #custom-cliphist, #custom-notifications,
+#custom-cava, #custom-media, #custom-power,
+#clock, #cpu, #memory, #temperature, #pulseaudio, #network,
+#tray, #idle_inhibitor, #window {
+    background-color: rgba(28, 30, 38, 0.88);
+    border: 1px solid rgba(108, 111, 147, 0.45);
+    border-radius: 10px;
+    padding: 2px 12px;
+    margin: 3px 3px;
+    color: #fadad1;
+    transition: background-color 160ms ease, color 160ms ease,
+                border-color 160ms ease, box-shadow 200ms ease;
+}
+
+/* ── Launcher — solid magenta cap (left anchor) ──────────── */
+
+#custom-launcher {
+    background-color: #ee64ac;
+    color: #1c1e26;
+    border: 1px solid #ee64ac;
+    font-size: 15px;
+    padding: 2px 14px 2px 16px;
+    border-radius: 14px;
+    margin-left: 6px;
+}
+#custom-launcher:hover {
+    background-color: #f075b5;
+    box-shadow: 0 0 12px rgba(238, 100, 172, 0.55);
+}
+
+/* ── Workspaces — numbered chip row ──────────────────────── */
+
+#workspaces {
+    background-color: rgba(28, 30, 38, 0.75);
+    border: 1px solid rgba(108, 111, 147, 0.35);
+    border-radius: 12px;
+    padding: 2px 4px;
+    margin: 3px 3px 3px 6px;
 }
 
 #workspaces button {
-    padding: 0 8px;
+    min-width: 22px;
+    padding: 1px 9px;
+    margin: 2px 2px;
+    color: #6c6f93;
     background: transparent;
-    color: #484f58;
-    border: none;
-    border-radius: 6px;
-    margin: 4px 2px;
-    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 11px;
+    transition: all 160ms ease;
 }
 
 #workspaces button:hover {
-    background: #161b22;
-    color: #e6edf3;
+    color: #fadad1;
+    background-color: rgba(38, 187, 217, 0.10);
+    border-color: rgba(38, 187, 217, 0.35);
+    box-shadow: none;
+    text-shadow: none;
 }
 
 #workspaces button.active {
-    color: #f97316;
-    background: #161b22;
+    color: #1c1e26;
+    background: linear-gradient(180deg, #3fc4de 0%, #26bbd9 100%);
+    border-color: #3fc4de;
+    box-shadow: 0 0 10px rgba(63, 196, 222, 0.55);
+    min-width: 28px;
+    font-weight: 800;
+}
+
+#workspaces button.focused {
+    color: #3fc4de;
+    border-color: #3fc4de;
+    background-color: rgba(38, 187, 217, 0.14);
 }
 
 #workspaces button.urgent {
-    color: #ef4444;
+    color: #1c1e26;
+    background: #e95678;
+    border-color: #e95678;
+    box-shadow: 0 0 10px rgba(233, 86, 120, 0.55);
 }
 
-/* Clock */
+/* ── Window title — subdued italic, no border ────────────── */
+
+#window {
+    color: #fadad1;
+    font-style: italic;
+    font-weight: 400;
+    border-color: transparent;
+    background-color: rgba(28, 30, 38, 0.55);
+    padding: 2px 14px;
+}
+
+window#waybar.empty #window {
+    background: transparent;
+    border-color: transparent;
+}
+
+/* ── Cava visualizer ─────────────────────────────────────── */
+
+#custom-cava {
+    color: #59e3e3;
+    border-color: rgba(89, 227, 227, 0.40);
+    font-size: 13px;
+    letter-spacing: 1px;
+    min-width: 100px;
+    padding: 2px 10px;
+}
+
+/* ── Clock (center, star of the bar) ─────────────────────── */
+
 #clock {
-    color: #e6edf3;
-    background: #161b22;
-    border-radius: 8px;
-    padding: 0 16px;
+    color: #ee64ac;
+    border-color: rgba(238, 100, 172, 0.45);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 2px 20px;
+    letter-spacing: 0.5px;
+}
+#clock:hover {
+    color: #1c1e26;
+    background-color: #ee64ac;
+    border-color: #ee64ac;
+    box-shadow: 0 0 14px rgba(238, 100, 172, 0.55);
 }
 
-/* Pulseaudio */
-#pulseaudio {
-    color: #22d3ee;
+/* ── Resource meters — per-module accent ────────────────── */
+
+#cpu         { color: #ee64ac; border-color: rgba(238, 100, 172, 0.45); }
+#memory      { color: #ee64ac; border-color: rgba(238, 100, 172, 0.45); }
+#temperature { color: #29d398; border-color: rgba(41, 211, 152, 0.45); }
+
+#cpu:hover         { background: rgba(238, 100, 172, 0.18); }
+#memory:hover      { background: rgba(238, 100, 172, 0.18); }
+#temperature:hover { background: rgba(41, 211, 152, 0.18); }
+
+#temperature.critical {
+    color: #1c1e26;
+    background: #e95678;
+    border-color: #e95678;
+    box-shadow: 0 0 14px rgba(233, 86, 120, 0.75);
+    animation: pulse 1.3s ease-in-out infinite;
 }
 
-#pulseaudio.muted {
-    color: #484f58;
-}
+/* ── Audio / Network ─────────────────────────────────────── */
 
-/* Network */
-#network {
-    color: #22c55e;
-}
+#pulseaudio            { color: #ee64ac; border-color: rgba(238, 100, 172, 0.45); }
+#pulseaudio.muted      { color: #6c6f93; border-color: rgba(108, 111, 147, 0.35); }
+#pulseaudio.bluetooth  { color: #59e3e3; border-color: rgba(89, 227, 227, 0.45); }
+#pulseaudio:hover      { background: rgba(238, 100, 172, 0.18); }
 
-#network.disconnected {
-    color: #ef4444;
-}
+#network               { color: #26bbd9; border-color: rgba(38, 187, 217, 0.45); }
+#network.disconnected  { color: #e95678; border-color: rgba(233, 86, 120, 0.45); }
+#network.disabled      { color: #6c6f93; }
+#network:hover         { background: rgba(38, 187, 217, 0.18); }
 
-/* Battery */
-#battery {
-    color: #22c55e;
-}
+/* ── Tray ────────────────────────────────────────────────── */
 
-#battery.charging {
-    color: #f97316;
-}
-
-#battery.warning:not(.charging) {
-    color: #eab308;
-}
-
-#battery.critical:not(.charging) {
-    color: #ef4444;
-    animation: blink 1s linear infinite;
-}
-
-@keyframes blink {
-    to {
-        color: #ffffff;
-    }
-}
-
-/* Tray */
 #tray {
-    margin-right: 8px;
+    padding: 2px 10px;
+    border-color: rgba(108, 111, 147, 0.35);
 }
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
+#tray > .passive         { -gtk-icon-effect: dim; }
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    color: #f97316;
+    color: #ee64ac;
 }
 
-/* Tooltip */
+/* ── Idle inhibitor ──────────────────────────────────────── */
+
+#idle_inhibitor           { color: #6c6f93; }
+#idle_inhibitor.activated {
+    color: #1c1e26;
+    background: #ee64ac;
+    border-color: #ee64ac;
+    box-shadow: 0 0 10px rgba(238, 100, 172, 0.55);
+}
+
+/* ── Clipboard ───────────────────────────────────────────── */
+
+#custom-cliphist {
+    color: #59e3e3;
+    border-color: rgba(89, 227, 227, 0.45);
+    font-size: 14px;
+}
+#custom-cliphist:hover {
+    color: #1c1e26;
+    background: #59e3e3;
+    border-color: #59e3e3;
+    box-shadow: 0 0 12px rgba(89, 227, 227, 0.55);
+}
+
+/* ── Notifications ───────────────────────────────────────── */
+
+#custom-notifications {
+    color: #fadad1;
+    border-color: rgba(108, 111, 147, 0.45);
+    font-size: 14px;
+}
+#custom-notifications.notification,
+#custom-notifications.inhibited-notification,
+#custom-notifications.dnd-notification,
+#custom-notifications.dnd-inhibited-notification {
+    color: #ee64ac;
+    border-color: #ee64ac;
+    box-shadow: 0 0 10px rgba(238, 100, 172, 0.45);
+}
+#custom-notifications.dnd-none,
+#custom-notifications.inhibited-none {
+    color: #ee64ac;
+    border-color: rgba(238, 100, 172, 0.45);
+}
+
+/* ── Media (MPRIS) ───────────────────────────────────────── */
+
+#custom-media         { color: #29d398; border-color: rgba(41, 211, 152, 0.45); }
+#custom-media.Paused  { color: #6c6f93; border-color: rgba(108, 111, 147, 0.35); }
+#custom-media.Playing { color: #29d398; border-color: rgba(41, 211, 152, 0.55); }
+#custom-media:hover   { background: rgba(41, 211, 152, 0.18); }
+
+/* ── Power — solid red cap (right anchor) ────────────────── */
+
+#custom-power {
+    background-color: #e95678;
+    color: #1c1e26;
+    border: 1px solid #e95678;
+    font-size: 15px;
+    padding: 2px 14px 2px 16px;
+    border-radius: 14px;
+    margin-right: 6px;
+}
+#custom-power:hover {
+    background-color: #f07088;
+    box-shadow: 0 0 12px rgba(233, 86, 120, 0.65);
+}
+
+/* ── Tooltip ─────────────────────────────────────────────── */
+
 tooltip {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 8px;
+    background-color: rgba(28, 30, 38, 0.97);
+    border: 1px solid #26bbd9;
+    border-radius: 10px;
 }
 
 tooltip label {
-    color: #e6edf3;
-    padding: 8px;
+    color: #fadad1;
+    padding: 6px 8px;
+    font-weight: 500;
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+
+@keyframes pulse {
+    0%   { opacity: 1;   box-shadow: 0 0 14px rgba(233, 86, 120, 0.75); }
+    50%  { opacity: 0.6; box-shadow: 0 0 22px rgba(233, 86, 120, 0.95); }
+    100% { opacity: 1;   box-shadow: 0 0 14px rgba(233, 86, 120, 0.75); }
 }

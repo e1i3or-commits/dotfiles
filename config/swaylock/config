@@ -1,4 +1,4 @@
-# Swaylock Configuration - Midnight Ember Theme
+# Swaylock Configuration - Event Horizon Theme (Horizon Dark)
 
 # Behavior
 daemonize
@@ -6,24 +6,24 @@ ignore-empty-password
 show-failed-attempts
 
 # Appearance
-color=0d1117
+color=1c1e26
 
 # Indicator circle
 indicator-radius=120
 indicator-thickness=12
 
-# Colors (Midnight Ember)
-inside-color=0d111700
-inside-clear-color=0d111700
-inside-caps-lock-color=0d111700
-inside-ver-color=0d111700
-inside-wrong-color=ef444420
+# Colors (Event Horizon — Horizon Dark)
+inside-color=1c1e2600
+inside-clear-color=1c1e2600
+inside-caps-lock-color=1c1e2600
+inside-ver-color=1c1e2600
+inside-wrong-color=e9567820
 
-ring-color=30363d
-ring-clear-color=22d3ee
-ring-caps-lock-color=eab308
-ring-ver-color=f97316
-ring-wrong-color=ef4444
+ring-color=6c6f93
+ring-clear-color=59e3e3
+ring-caps-lock-color=ee64ac
+ring-ver-color=26bbd9
+ring-wrong-color=e95678
 
 line-color=00000000
 line-clear-color=00000000
@@ -33,20 +33,27 @@ line-wrong-color=00000000
 
 separator-color=00000000
 
-text-color=e6edf3
-text-clear-color=22d3ee
-text-caps-lock-color=eab308
-text-ver-color=f97316
-text-wrong-color=ef4444
+text-color=fadad1
+text-clear-color=59e3e3
+text-caps-lock-color=ee64ac
+text-ver-color=26bbd9
+text-wrong-color=e95678
 
-bs-hl-color=ef4444
-key-hl-color=f97316
+bs-hl-color=e95678
+key-hl-color=ee64ac
 
 # Layout
 layout-bg-color=00000000
 layout-border-color=00000000
-layout-text-color=e6edf3
+layout-text-color=fadad1
 
 # Font
 font=JetBrainsMono Nerd Font
 font-size=24
+
+# Background: blur + vignette over a dim Event Horizon base
+# (swaylock-effects is installed; plain swaylock ignores these cleanly)
+effect-blur=8x3
+effect-vignette=0.5:0.5
+fade-in=0.2
+
